@@ -14,3 +14,19 @@ data = sorted(data, key=lambda x: x['group'])
 
 for i in data:
     print(var.add_set(i['group'], i['question'], i['answer']))
+
+for x in range(10):
+    print(var.add_chatid(107+x, 'user'))
+
+
+
+# for i in data:
+#     v
+#     print(i['question'])
+#     print(i['answer'])
+
+
+
+#var = db_handler.Handler()
+#var.create_db_and_tables() # path = 1создание бд
+

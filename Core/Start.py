@@ -1,19 +1,20 @@
 import Core.Controller.DB_Handle as db_handler
+import Core.Controller.Comand_Handler as comand_handler
+from Core.Configuration import *
+from Core.Self_Check import *
+from telebot import *
 
 
-"""
-Реализовать проверку наличия файла базы данных, если нет вызывать следующий код:
-"""
-#var = db_handler.Handler()
-#var.create_db_and_tables() # создание бд
+bot = TeleBot(Configuration.token)
 
-var = db_handler.Handler()
-for x in range(10):
-    print(var.add_chatid(107+x, 'Ssutsul'))
 
-"""
-Реализовать запуск pool Telegram
-"""
+@bot.message_handler(func= lambda message: True, content_types=['text'])
+def handle_messages(message):
+    comand_handler.handle(message)
+    bot.reply_to(message, comand_handler.Message, reply_markup=comand_handler.Markup)
+
+
+bot.polling()
 
 """
 Все запросы адресовать в Command handler, 
@@ -22,6 +23,6 @@ for x in range(10):
 """
 
 """
-Реалазиовать логгирование всех действий этого файла с ротацией логов, путь к логу хранится в файле конфига
+Реализовать логгирование всех действий этого файла с ротацией логов, путь к логу хранится в файле конфига
 """
 
