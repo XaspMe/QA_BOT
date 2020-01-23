@@ -34,7 +34,7 @@ class Handler(Model):
             # :TODO добавить запись ошибки в лог и уточнение ошибок по PEP8.
             raise
 
-    def is_exist_chatid_chat_id(self, chat_id):
+    def _is_exist_chat_id(self, chat_id):
         """
         Check what the user is exist in DB
         :param chat_id: int (T_Chat_ID)

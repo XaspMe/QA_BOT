@@ -18,7 +18,7 @@ class Handler:
         self.message = message
 
     def handle(self):
-        validate = uv.UserValidation(self.message.id, self.message.first_name)
+        validate = uv.UserValidation(self.message.chat.id, self.message.from_user)
         if not validate.check_or_create():
             raise Exception('User validation exception')
 

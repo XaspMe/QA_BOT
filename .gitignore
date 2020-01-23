@@ -12,3 +12,9 @@ Core/Model/DB/__pycache__/
 Core/Controller/__pycache__/
 
 *.pyc
+
+venv3/
+
+Core/QA_DB.db
+
+*.db

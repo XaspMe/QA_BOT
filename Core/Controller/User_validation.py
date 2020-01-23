@@ -19,7 +19,7 @@ class UserValidation:
         :return: Bool value
         """
         try:
-            if self.handler.is_exist_chatid_chat_id(self.id, self.user_name):
+            if self.handler._is_exist_chat_id(self.id):
                 return True
             else:
                 self.handler.add_chatid(self.id, self.user_name)

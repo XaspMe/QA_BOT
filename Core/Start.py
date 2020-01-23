@@ -1,3 +1,5 @@
+from telebot.apihelper import _convert_markup
+
 import Core.Controller.DB_Handle as db_handler
 import Core.Controller.Comand_Handler as comand_handler
 from Core.Configuration import *

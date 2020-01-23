@@ -7,8 +7,8 @@ class Configuration:
     """
 
     def __init__(self):
-        self.db_path = "c:/temp/"
-        self.db_name = self.db_path + 'QA_DB.db'  # Имя базы данных.
+        self.db_path = Path.cwd()
+        self.db_name = self.db_path / 'QA_DB.db'  # Имя базы данных.
         self.log_name = ""
         self.log_path = ""
         self.token = "698296687:AAFQl6Po6wpxBFXH-qHcrlii9BQCxFDkUJk"  # Telebot token
