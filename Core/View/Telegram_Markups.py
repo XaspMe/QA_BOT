@@ -19,9 +19,8 @@ class Menu():
     """
     Класс меню ответа от бота
     """
-    markup = types.ReplyKeyboardMarkup()
-
     def __init__(self):
+        self.markup = types.ReplyKeyboardMarkup()
         itemquestions = types.KeyboardButton('Перейти к вопросам')
         itemfavourites = types.KeyboardButton('Избранные вопросы')
         itemgroups = types.KeyboardButton('Выбрать темы')

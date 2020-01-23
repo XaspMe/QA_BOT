@@ -1,10 +1,11 @@
 from telebot.apihelper import _convert_markup
 
 import Core.Controller.DB_Handle as db_handler
-import Core.Controller.Comand_Handler as comand_handler
+import Core.Controller.Comand_Handler as ch
 from Core.Configuration import *
 from Core.Self_Check import Diagnostics
 from telebot import *
+
 
 
 try:
@@ -20,8 +21,9 @@ bot = TeleBot(Configuration().token)
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def handle_messages(message):
-    hanlder = comand_handler.Handler(message).handle()
-    bot.reply_to(message, hanlder.text_response, reply_markup=hanlder.markup)
+    handler = ch.Handler(message)
+    handler.handle()
+    bot.reply_to(message, handler.text_response, reply_markup=handler.markup)
 
 
 bot.polling()

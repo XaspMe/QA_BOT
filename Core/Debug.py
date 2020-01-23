@@ -4,3 +4,4 @@ from Core.Configuration import Configuration
 var = Diagnostics(Configuration())
 
 print(var._ping_telegram())
+

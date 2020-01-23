@@ -14,9 +14,10 @@ data = sorted(data, key=lambda x: x['group'])
 
 for i in data:
     print(var.add_set(i['group'], i['question'], i['answer']))
+    DB_Handle.Handler().add_set(i['group'], i['question'], i['answer'])
 
-for x in range(10):
-    print(var.add_chatid(107+x, 'user'))
+# for x in range(10):
+#     print(var.add_chatid(107+x, 'user'))
 
 
 

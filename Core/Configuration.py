@@ -7,7 +7,7 @@ class Configuration:
     """
 
     def __init__(self):
-        self.db_path = Path.cwd()
+        self.db_path = Path.cwd() # TODO: Хранить бд в корне приложения
         self.db_name = self.db_path / 'QA_DB.db'  # Имя базы данных.
         self.log_name = ""
         self.log_path = ""

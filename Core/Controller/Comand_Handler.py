@@ -1,5 +1,6 @@
 from Core.Controller import User_validation as uv
 from Core.View import Telegram_Markups as tm
+from Core.Controller import DB_Handle as db
 from telebot import *
 
 """
@@ -16,14 +17,14 @@ from telebot import *
 class Handler:
     def __init__(self, message):
         self.message = message
+        self.text_response = 'Test'
+        self.markup = tm.Menu().markup
 
     def handle(self):
         validate = uv.UserValidation(self.message.chat.id, self.message.from_user)
+        db.Handler().create_db_and_tables()
         if not validate.check_or_create():
             raise Exception('User validation exception')
-
-        self.text_responce = 'Test'
-        self.markup = tm.Menu()
 
 
 
