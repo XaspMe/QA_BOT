@@ -33,7 +33,28 @@ class Diagnostics:
         else:
             raise DbFileNotFound(f'On path {self.configuration.db_name}')  # тут используется интерполяция строк
 
-    def _ping_telegram(self):
+    
+def ping_ip(ip_address):
+    """
+    Ping IP address and return tuple:
+    On success:
+        * True
+        * command output (stdout)
+    On failure:
+        * False
+        * error output (stderr)
+    """
+    reply = subprocess.run(['ping', '-c', '1', '-n', ip_address],
+                           stdout=subprocess.PIPE, 
+                           stderr=subprocess.PIPE,
+                           encoding='utf-8')
+    if reply.returncode == 0:
+    	
+        return True, reply.stdout
+       
+    else:
+        return False, reply.stderr
+print(ping_ip('8.8.8.8'))
         """
          TODO: Создать метод возвращающий True, если 'address' доступен командой 'Ping', иначе вызывать 'свое' искючение.
 
