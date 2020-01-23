@@ -18,8 +18,8 @@ bot = TeleBot(Configuration().token)
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def handle_messages(message):
-    comand_handler.handle(message)
-    bot.reply_to(message, comand_handler.text_response, reply_markup=comand_handler.markup)
+    hanlder = comand_handler.Handler(message).handle()
+    bot.reply_to(message, hanlder.text_response, reply_markup=hanlder.markup)
 
 
 bot.polling()
