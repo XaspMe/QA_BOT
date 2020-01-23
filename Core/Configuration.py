@@ -1,9 +1,18 @@
+from pathlib import Path
 
-"""
-Represent application configuration.
-"""
-db_path = "c:/temp/"
-db_name = db_path + 'QA_DB.db'  # Имя базы данных.
-log_name = ""
-log_path = ""
-token = "698296687:AAFQl6Po6wpxBFXH-qHcrlii9BQCxFDkUJk"  # Telebot token
+class Configuration:
+    """
+    Represent application configuration.
+    TODO: Создать config.ini файл для чтения конфигурации из него.
+    """
+
+    def __init__(self):
+        self.db_path = "c:/temp/"
+        self.db_name = self.db_path + 'QA_DB.db'  # Имя базы данных.
+        self.log_name = ""
+        self.log_path = ""
+        self.token = "698296687:AAFQl6Po6wpxBFXH-qHcrlii9BQCxFDkUJk"  # Telebot token
+        self.wan_check_adress = '8.8.8.8'
+
+    def init_db_path(self):
+        pass

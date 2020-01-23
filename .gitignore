@@ -10,3 +10,5 @@ venv/
 Core/Model/DB/__pycache__/
 
 Core/Controller/__pycache__/
+
+*.pyc
