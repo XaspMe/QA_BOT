@@ -1,17 +1,25 @@
 import Core.Controller.DB_Handle as db_handler
 import Core.Controller.Comand_Handler as comand_handler
 from Core.Configuration import *
-from Core.Self_Check import *
+from Core.Self_Check import Diagnostics
 from telebot import *
 
 
-bot = TeleBot(Configuration.token)
+try:
+    diagnostic = Diagnostics(Configuration()).start()
+except Exception as e:
+    print(e)
 
 
-@bot.message_handler(func= lambda message: True, content_types=['text'])
+
+
+bot = TeleBot(Configuration().token)
+
+
+@bot.message_handler(func=lambda message: True, content_types=['text'])
 def handle_messages(message):
     comand_handler.handle(message)
-    bot.reply_to(message, comand_handler.Message, reply_markup=comand_handler.Markup)
+    bot.reply_to(message, comand_handler.text_response, reply_markup=comand_handler.markup)
 
 
 bot.polling()

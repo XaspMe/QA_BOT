@@ -1,10 +1,10 @@
 from peewee import *
-from Core import Configuration
+from Core import Configuration as cf
 
 
 class BaseModel(Model):
     class Meta:
-        database = SqliteDatabase(Configuration.db_name)
+        database = SqliteDatabase(cf.Configuration().db_name)
 
 
 class Groups(BaseModel):

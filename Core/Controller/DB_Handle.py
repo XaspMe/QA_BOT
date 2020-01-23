@@ -1,5 +1,5 @@
 from Core.Model.DB.DB_Model import Groups, Sets, ChatIDs, ChosenGroups
-from Core import Configuration
+from Core import Configuration as cf
 from peewee import *
 
 
@@ -8,7 +8,7 @@ class Handler(Model):
     """
     Класс контекста базы данных (ORM)
     """
-    db = SqliteDatabase(Configuration.db_name)
+    db = SqliteDatabase(cf.Configuration().db_name)
 
     def create_db_and_tables(self):
         """
