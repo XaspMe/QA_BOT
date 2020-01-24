@@ -16,9 +16,14 @@ from telebot import *
 
 class Handler:
     def __init__(self, message):
+<<<<<<< HEAD
         self.set_handler = Sets_Handler.SetsHandler()
         self.message = message
         self.is_prepared = None
+=======
+        self.message = message
+        self.text_response = 'Test'
+>>>>>>> Pre-prod
 
     def handle(self):
         print(self.message.text)
@@ -28,6 +33,7 @@ class Handler:
         if self.message.text == 'Следующий вопрос':
             self.__next_question()
 
+<<<<<<< HEAD
         if self.message.text == 'Показать ответ':
             self.__show_answer()
 
@@ -37,6 +43,8 @@ class Handler:
     def __next_question(self):
         qa_set = self.set_handler.get_random_set((1, 2, 3, 4))[0]
 
+=======
+>>>>>>> Pre-prod
         self.text_response = qa_set.question
         self.markup = tm.QAMarkup().markup
         db.Handler().upd_chat_lastset(self.message.chat.id, qa_set.id)

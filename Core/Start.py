@@ -23,8 +23,12 @@ bot = TeleBot(Configuration().token)
 def handle_messages(message):
     handler = ch.Handler(message)
     handler.handle()
+<<<<<<< HEAD
     if handler.is_prepared:
         bot.send_message(message.chat.id, handler.text_response, reply_markup=handler.markup)
+=======
+    bot.send_message(message.chat.id, handler.text_response, reply_markup=handler.markup)
+>>>>>>> Pre-prod
 
 
 bot.polling()
