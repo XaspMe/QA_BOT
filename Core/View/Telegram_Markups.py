@@ -1,29 +1,30 @@
 from telebot import types
 
 
-
-class QAMarkup():
+class QAMarkup:
     """
     Класс QA (Основной набор кнопок) ответа от бота
     """
 
     def __init__(self):
         self.markup = types.ReplyKeyboardMarkup()
-        itemnext = types.KeyboardButton('Следующий вопрос')
-        itemanswer = types.KeyboardButton('Показать ответ')
-        itemmenu = types.KeyboardButton('Меню')
-        self.markup.row(itemnext, itemanswer)
-        self.markup.row(itemmenu)
+        item_next = types.KeyboardButton('Следующий вопрос')
+        item_answer = types.KeyboardButton('Показать ответ')
+        self.markup.row(item_next, item_answer)
+        item_star = types.KeyboardButton('Добавить в избранное')
+        item_menu = types.KeyboardButton('Меню')
+        self.markup.row(item_menu, item_star)
 
-class Menu():
+
+class Menu:
     """
     Класс меню ответа от бота
     """
 
     def __init__(self):
         self.markup = types.ReplyKeyboardMarkup()
-        itemquestions = types.KeyboardButton('Перейти к вопросам')
-        itemfavourites = types.KeyboardButton('Избранные вопросы')
-        itemgroups = types.KeyboardButton('Выбрать темы')
-        self.markup.row(itemquestions, itemfavourites)
-        self.markup.row(itemgroups)
+        item_questions = types.KeyboardButton('Перейти к вопросам')
+        item_favourites = types.KeyboardButton('Избранные вопросы')
+        self.markup.row(item_questions, item_favourites)
+        item_groups = types.KeyboardButton('Выбрать темы')
+        self.markup.row(item_groups)
