@@ -23,6 +23,9 @@ class Handler(Model):
     """
     ACTION UNDER THE ChatIDS
     """
+    def get_user_last_set(self, userid):
+        return ChatIDs.select(ChatIDs.last_set).where(ChatIDs.chat_id == userid).execute()[0].last_set
+
     def add_chatid(self, id, username):
         """
         Add new user to table
@@ -140,5 +143,7 @@ class Handler(Model):
 
     def get_random_set_by_groups(self, groups):
         random_group = random.choice(groups)
-        return Sets.select(Sets.id, Sets.question).where((Sets.qa_group == random_group)).order_by(fn.Random()).execute()
+        return Sets.select(Sets.id, Sets.question).where(Sets.qa_group == random_group).order_by(fn.Random()).execute()
 
+    def get_answer_by_set_id(id, last_set):
+        return Sets.select(Sets.answer).where(Sets.id == last_set).execute()[0]
