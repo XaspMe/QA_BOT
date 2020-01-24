@@ -23,7 +23,7 @@ bot = TeleBot(Configuration().token)
 def handle_messages(message):
     handler = ch.Handler(message)
     handler.handle()
-    bot.reply_to(message, handler.text_response, reply_markup=handler.markup)
+    bot.send_message(message.chat.id, handler.text_response, reply_markup=handler.markup)
 
 
 bot.polling()
