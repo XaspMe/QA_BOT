@@ -46,8 +46,7 @@ class Diagnostics:
         """
         param = '-n' if platform.system().lower() == 'windows' else '-c'  # different params for win/linux platform
         for url in self.configuration.wan_check_adress:
-         command = ['ping', param, '1', url]  #
-        if subprocess.call(command, stdout=False) == 0:
-            return True
-        else:
-            raise WanCheckError(f"Can't ping {self.configuration.wan_check_adress}")
+            command = ['ping', param, '1', url]  #
+            if subprocess.call(command, stdout=False) == 0:
+                return True
+        raise WanCheckError(f"Can't ping {self.configuration.wan_check_adress}")
