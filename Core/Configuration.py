@@ -7,7 +7,7 @@ class Configuration:
     """
 
     def __init__(self):
-        path_to_core = Path(str(Path().cwd())[:str(Path().cwd()).index('Core') + 4])
+        path_to_core = Path(str(Path().cwd())[:str(Path().cwd()).index('QA_BOT') + 6])
         self.db_name = path_to_core / 'QA_DB.db'  # Имя базы данных.
         self.log_name = ""
         self.log_path = ""

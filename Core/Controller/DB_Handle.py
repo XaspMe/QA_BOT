@@ -139,6 +139,6 @@ class Handler(Model):
         return Sets.insert({Sets.qa_group: group, Sets.question : question, Sets.answer: answer}).execute()
 
     def get_random_set_by_groups(self, groups):
-        return Sets.select(set.id, set.name).where((set.group == random.choice(groups)))
-
+        random_group = random.choice(groups)
+        return Sets.select(Sets.id, Sets.question).where((Sets.qa_group == random_group)).order_by(fn.Random()).execute()
 
