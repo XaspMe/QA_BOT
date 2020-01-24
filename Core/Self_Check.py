@@ -41,6 +41,9 @@ class Diagnostics:
         Check wan accessibility
         :return:
         """
+        """
+        TODO: Сделать на список устройств.
+        """
         param = '-n' if platform.system().lower() == 'windows' else '-c'  # different params for win/linux platform
         command = ['ping', param, '1', self.configuration.wan_check_adress]  #
         if subprocess.call(command, stdout=False) == 0:
