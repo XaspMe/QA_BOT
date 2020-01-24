@@ -16,9 +16,8 @@ from telebot import *
 
 class Handler:
     def __init__(self, message):
-        self.message = self.message
+        self.message = message
         self.text_response = 'Test'
-        self.markup = tm.Menu().markup
 
     def handle(self):
         print(self.message.text)
@@ -29,7 +28,7 @@ class Handler:
         set_handler = Sets_Handler.SetsHandler()
         qa_set = set_handler.get_random_set((1,2,3,4))[0]
 
-        self.message = qa_set.question
+        self.text_response = qa_set.question
         self.markup = tm.QAMarkup().markup
         db.Handler().upd_chat_lastset(self.message.chat.id, qa_set.id)
 
