@@ -1,8 +1,11 @@
 from Core.Configuration import Configuration
 import os
+import platform
+import subprocess
 
 
 class DbFileNotFound(Exception): pass # Исключение не найден файл базы данных.
+class WanCheckError(Exception): pass # Исключение нет связи с WAN
 
 
 class Diagnostics:
@@ -33,36 +36,14 @@ class Diagnostics:
         else:
             raise DbFileNotFound(f'On path {self.configuration.db_name}')  # тут используется интерполяция строк
 
-    
-def ping_ip(ip_address):
-    """
-    Ping IP address and return tuple:
-    On success:
-        * True
-        * command output (stdout)
-    On failure:
-        * False
-        * error output (stderr)
-    """
-    reply = subprocess.run(['ping', '-c', '1', '-n', ip_address],
-                           stdout=subprocess.PIPE, 
-                           stderr=subprocess.PIPE,
-                           encoding='utf-8')
-    if reply.returncode == 0:
-    	
-        return True, reply.stdout
-       
-    else:
-        return False, reply.stderr
-print(ping_ip('8.8.8.8'))
+    def _ping_telegram(self):
         """
-         TODO: Создать метод возвращающий True, если 'address' доступен командой 'Ping', иначе вызывать 'свое' искючение.
-
-         Пример, в функции выше, raise вызывает ошибку которая описана в начале файла.
-         Ошибка наследуется от Exception, вместе с ее конструктором, полями и т.д
+        Check wan accessibility
+        :return:
         """
-
-        address = self.configuration.wan_check_adress
-        pass
-
-
+        param = '-n' if platform.system().lower() == 'windows' else '-c'  # different params for win/linux platform
+        command = ['ping', param, '1', self.configuration.wan_check_adress]  #
+        if subprocess.call(command, stdout=False) == 0:
+            return True
+        else:
+            raise WanCheckError(f"Can't ping {self.configuration.wan_check_adress}")
