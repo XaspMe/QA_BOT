@@ -48,7 +48,7 @@ class Handler:
         self.set_handler = DB_Handle.Handler()
         qa_set = self.set_handler.get_random_set_by_groups((1, 2, 3, 4))[0]
         self.set_handler.upd_chat_lastset(self.message.chat.id, qa_set.id)
-        self.text_response = qa_set.question
+        self.text_response = qa_set.question + '\n qqqqq'
         self.markup = tm.QAMarkup().markup
         self.is_prepared = True
 

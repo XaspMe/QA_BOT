@@ -162,6 +162,7 @@ class Handler(Model):
     """
     Actions under FavouritesSet
     """
+
     def add_to_favourites(self, chat_id, set_id):
         return FavouritesSet.insert({FavouritesSet.chat : chat_id, FavouritesSet.set: set_id}).execute()
 
