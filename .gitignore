@@ -10,6 +10,8 @@ venv/
 Core/Model/DB/__pycache__/
 
 Core/Controller/__pycache__/
+<<<<<<< HEAD
+=======
 
 *.pyc
 
@@ -18,3 +20,4 @@ venv3/
 Core/QA_DB.db
 
 *.db
+>>>>>>> master
