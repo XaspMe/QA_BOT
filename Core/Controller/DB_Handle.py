@@ -2,6 +2,8 @@ from Core.Model.DB.DB_Model import Groups, Sets, ChatIDs, ChosenGroups
 from Core import Configuration as cf
 from peewee import *
 
+import random
+
 
 
 class Handler(Model):
@@ -136,5 +138,7 @@ class Handler(Model):
     def add_set(self, group, question, answer):
         return Sets.insert({Sets.qa_group: group, Sets.question : question, Sets.answer: answer}).execute()
 
-    def get_qa(self):
-        return (Sets.select())
+    def get_random_set_by_groups(self, groups):
+        return Sets.select(set.id, set.name).where((set.group == random.choice(groups)))
+
+
