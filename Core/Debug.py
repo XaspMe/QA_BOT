@@ -4,7 +4,7 @@ from pathlib import Path
 
 var = Diagnostics(Configuration())
 
-p = r'C:\Users\S.Tsutsulenko\Documents\Git\QA_BOT\Coresdfsdfdsf'
-print(Path(p[:p.index('Core')+4]))
+
+print(Configuration().db_name)
 
 
