@@ -10,7 +10,7 @@ class QAMarkup():
     def __init__(self):
         self.markup = types.ReplyKeyboardMarkup()
         itemnext = types.KeyboardButton('Следующий вопрос')
-        itemanswer = types.KeyboardButton('Показать ответы')
+        itemanswer = types.KeyboardButton('Показать ответ')
         itemmenu = types.KeyboardButton('Меню')
         self.markup.row(itemnext, itemanswer)
         self.markup.row(itemmenu)

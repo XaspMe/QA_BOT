@@ -16,23 +16,38 @@ from telebot import *
 
 class Handler:
     def __init__(self, message):
+        self.set_handler = Sets_Handler.SetsHandler()
         self.message = message
-        self.text_response = 'Test'
+        self.is_prepared = None
 
     def handle(self):
         print(self.message.text)
-        validate = User_validation.UserValidation(self.message.chat.id, self.message.from_user)
-        if not validate.check_or_create():
-            raise Exception('User validation exception')
+        validate = User_validation.UserValidation(self.message.chat.id, self.message.from_user.username)
+        validate.check_or_create()
 
-        set_handler = Sets_Handler.SetsHandler()
-        qa_set = set_handler.get_random_set((1,2,3,4))[0]
+        if self.message.text == 'Следующий вопрос':
+            self.__next_question()
+
+        if self.message.text == 'Показать ответ':
+            self.__show_answer()
+
+    def __hello(self):
+        pass
+
+    def __next_question(self):
+        qa_set = self.set_handler.get_random_set((1, 2, 3, 4))[0]
 
         self.text_response = qa_set.question
         self.markup = tm.QAMarkup().markup
         db.Handler().upd_chat_lastset(self.message.chat.id, qa_set.id)
+        self.is_prepared = True
 
-
+    def __show_answer(self):
+        last_set = self.set_handler.get_user_last_set()
+        self.text_response = self.set_handler.get_answer_by_set_id(last_set)
+        self.markup = tm.QAMarkup().markup
+        self.is_prepared = True
+        pass
 
 
 
