@@ -146,4 +146,4 @@ class Handler(Model):
         return Sets.select(Sets.id, Sets.question).where(Sets.qa_group == random_group).order_by(fn.Random()).execute()
 
     def get_answer_by_set_id(id, last_set):
-        return Sets.select(Sets.answer).where(Sets.id == last_set).execute()[0]
+        return Sets.select(Sets.answer).where(Sets.id == last_set).execute()[0].answer

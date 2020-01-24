@@ -1,4 +1,4 @@
-from Core.Controller import User_validation, Sets_Handler, DB_Handle
+from Core.Controller import DB_Handle, User_validation
 from Core.View import Telegram_Markups as tm
 from Core.Controller import DB_Handle as db
 from telebot import *
@@ -16,7 +16,7 @@ from telebot import *
 
 class Handler:
     def __init__(self, message):
-        self.set_handler = Sets_Handler.SetsHandler()
+        self.set_handler = DB_Handle.Handler()
         self.message = message
         self.is_prepared = None
 
@@ -35,14 +35,18 @@ class Handler:
         pass
 
     def __next_question(self):
-        qa_set = self.set_handler.get_random_set((1, 2, 3, 4))[0]
+        qa_set = self.set_handler.get_random_set_by_groups((1, 2, 3, 4))[0]
+        self.set_handler.upd_chat_lastset(self.message.chat.id, qa_set.id)
+        self.text_response = qa_set.question
+        self.markup = tm.QAMarkup().markup
+        self.is_prepared = True
 
     def __show_answer(self):
-        last_set = self.set_handler.get_user_last_set()
+        last_set = self.set_handler.get_user_last_set(self.message.chat.id)
+        print(last_set)
         self.text_response = self.set_handler.get_answer_by_set_id(last_set)
         self.markup = tm.QAMarkup().markup
         self.is_prepared = True
-        pass
 
 
 
