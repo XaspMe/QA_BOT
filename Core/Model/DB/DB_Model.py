@@ -11,7 +11,7 @@ class Groups(BaseModel):
     """
     Represent Groups of questions, for example (OOP, C#, PYTHON, GENERAL DEV QUESTION)
     """
-    id = AutoField()  # PK
+    id = IntegerField(unique=True)  # PK
     name = TextField(unique=True, null=False)  # group name
 
 
@@ -43,3 +43,9 @@ class ChosenGroups(BaseModel):
     id = AutoField()  # PK
     chat = ForeignKeyField(ChatIDs, null=False)  # chat FK
     group = ForeignKeyField(Groups, null=False)  # group FK
+
+
+class FavouritesSet(BaseModel):
+    id = AutoField()  # PK
+    chat = ForeignKeyField(ChatIDs, null=False)
+    set = ForeignKeyField(Sets, null=False)

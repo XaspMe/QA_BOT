@@ -1,4 +1,4 @@
-from Core.Model.DB.DB_Model import Groups, Sets, ChatIDs, ChosenGroups
+from Core.Model.DB.DB_Model import Groups, Sets, ChatIDs, ChosenGroups, FavouritesSet
 from Core import Configuration as cf
 from peewee import *
 
@@ -17,7 +17,7 @@ class Handler(Model):
         Создание базы данных и необходимых таблиц из DB_MODEL.
         """
         with self.db:
-            return self.db.create_tables([Groups, Sets, ChatIDs, ChosenGroups]) # Create the tables.
+            return self.db.create_tables([Groups, Sets, ChatIDs, ChosenGroups, FavouritesSet]) # Create the tables.
 
 
     """
@@ -147,3 +147,24 @@ class Handler(Model):
 
     def get_answer_by_set_id(id, last_set):
         return Sets.select(Sets.answer).where(Sets.id == last_set).execute()[0].answer
+
+
+    """
+    Actions under the groups
+    """
+
+    def get_groups(self):
+        return Groups.select(Groups.id, Groups.name).execute()
+
+    def add_group(self, id, name):
+        return Groups.insert({Groups.id: id, Groups.name: name}).execute()
+
+    """
+    Actions under FavouritesSet
+    """
+
+    def add_to_favourites(self, chat_id, set_id):
+        return FavouritesSet.insert({FavouritesSet.chat : chat_id, FavouritesSet.set: set_id}).execute()
+
+    def del_from_favourites(self, chat_id, set_id):
+        return FavouritesSet.delete().where(FavouritesSet.chat == chat_id, FavouritesSet.set == set_id).execute()
