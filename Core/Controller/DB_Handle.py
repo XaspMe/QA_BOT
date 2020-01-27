@@ -91,7 +91,7 @@ class Handler(Model):
             return False
 
     def get_chosen_by_chatids_id(self, chat_id):
-        return ChosenGroups.select(ChosenGroups.group).where(ChosenGroups.chat == chat_id).execute()
+        return ChosenGroups.select(ChosenGroups.group, ChosenGroups.id).where(ChosenGroups.chat == chat_id).execute()
 
 
 

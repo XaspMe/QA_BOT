@@ -1,5 +1,6 @@
 from Core.Controller import DB_Handle, User_validation
 from Core.View import Telegram_Markups as tm
+import emoji
 from Core.Controller import DB_Handle as db
 from telebot import *
 
@@ -48,14 +49,18 @@ class Handler:
         if self.message.text == 'Выбрать темы':
             self.__chose_themes()
 
+        #if self.message.text
+
     def __chose_themes(self):
         self.set_handler = DB_Handle.Handler()
-        user_group_list = self.set_handler.get_chosen_by_chatids_id(self.message.chat.id)
-        system_group_list = self.set_handler.get_groups()
-        # prepared_list = ['y'+i for i in user_group_list if i in system_group_list]
-        # prepared_list.append('x'+i for i in system_group_list if i in user_group_list)
+        groups_list = []
+        for theme in self.set_handler.get_groups():
+            if self.set_handler.is_group_chosen(self.message.chat.id, theme.id):
+                groups_list.append(emoji.emojize(':thumbsup:', use_aliases=True) + theme)
+            else:
+                groups_list.append(emoji.emojize(':thumbsdown:', use_aliases=True) + theme)
         self.text_response = 'Управление темами'
-        self.markup = tm.GroupList(system_group_list).markup
+        self.markup = tm.GroupList(groups_list).markup
         self.is_prepared = True
 
     def __go_to_menu(self):
