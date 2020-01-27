@@ -67,7 +67,8 @@ class Handler:
         self.set_handler = DB_Handle.Handler()
         qa_set = self.set_handler.get_random_set_by_groups((1, 2, 3, 4))[0]
         self.set_handler.upd_chat_lastset(self.message.chat.id, qa_set.id)
-        self.text_response = qa_set.question + '\n qqqqq'
+        set_theme = self.set_handler.get_group_name_by_set_id(qa_set)
+        self.text_response = f'Раздел: {set_theme} \n{qa_set.question}'
         if self.set_handler.is_set_chosen(self.message.chat.id, qa_set):
             self.markup = tm.QAMarkupSetChosen().markup
         else:

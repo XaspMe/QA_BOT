@@ -18,7 +18,7 @@ for i in data:
 DB_Handle.Handler().add_group(1, 'ООП, Паттерны, проектирование')
 DB_Handle.Handler().add_group(2, 'C#')
 DB_Handle.Handler().add_group(3, 'Базовые вопросы по разработке')
-DB_Handle.Handler().add_group(5, 'Python')
+DB_Handle.Handler().add_group(4, 'Python')
 
 
 for x in range(10):

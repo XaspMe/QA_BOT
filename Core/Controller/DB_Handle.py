@@ -148,6 +148,19 @@ class Handler(Model):
     def get_groups(self):
         return Groups.select().execute()
 
+    def get_group_name_by_id(self, id):
+        return Groups.select().where(Groups.id == id).execute()[0].name
+
+    def get_group_name_by_set_id(self, id):
+        set_id = Sets.select(Sets.qa_group).where(Sets.id == id).execute()
+        if len(set_id) > 0:
+            return self.get_group_name_by_id(set_id[0].qa_group)
+        else:
+            #TODO: Добавить кастомное исключение
+            pass
+
+
+
 
     """
     ACTION UNDER THE Sets
