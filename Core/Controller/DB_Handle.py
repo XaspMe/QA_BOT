@@ -1,9 +1,10 @@
-from Core.Model.DB.DB_Model import Groups, Sets, ChatIDs, ChosenGroups, FavouritesSet
+from Core.Model.DB.DB_Model import Groups, Sets, ChatIDs, ChosenGroups, ChatidSetIntermediate
 from Core import Configuration as cf
 from peewee import *
 
 import random
 
+class ChatidSetIntermediateException(Exception): pass
 
 
 class Handler(Model):
@@ -17,7 +18,7 @@ class Handler(Model):
         Создание базы данных и необходимых таблиц из DB_MODEL.
         """
         with self.db:
-            return self.db.create_tables([Groups, Sets, ChatIDs, ChosenGroups, FavouritesSet]) # Create the tables.
+            return self.db.create_tables([Groups, Sets, ChatIDs, ChosenGroups, ChatidSetIntermediate])  # Create the tables.
 
 
     """
@@ -139,7 +140,7 @@ class Handler(Model):
     ACTION UNDER THE Sets
     """
     def add_set(self, group, question, answer):
-        return Sets.insert({Sets.qa_group: group, Sets.question : question, Sets.answer: answer}).execute()
+        return Sets.insert({Sets.qa_group: group, Sets.question: question, Sets.answer: answer}).execute()
 
     def get_random_set_by_groups(self, groups):
         random_group = random.choice(groups)
@@ -160,11 +161,23 @@ class Handler(Model):
         return Groups.insert({Groups.id: id, Groups.name: name}).execute()
 
     """
-    Actions under FavouritesSet
+    Actions under the ChatidSetIntermediate
     """
 
-    def add_to_favourites(self, chat_id, set_id):
-        return FavouritesSet.insert({FavouritesSet.chat : chat_id, FavouritesSet.set: set_id}).execute()
+    def add_to_ChatidSetIntermediate(self, chat_id, set_id):
+        if len(ChatidSetIntermediate.select().where((ChatidSetIntermediate.chat == chat_id) \
+                                                & (ChatidSetIntermediate.set == set_id)).execute()) > 0:
+            pass
+        else:
+            ChatidSetIntermediate.insert({ChatidSetIntermediate.chat: chat_id, ChatidSetIntermediate.set: set_id}).execute()
 
-    def del_from_favourites(self, chat_id, set_id):
-        return FavouritesSet.delete().where(FavouritesSet.chat == chat_id, FavouritesSet.set == set_id).execute()
+    def get_ChatidSetIntermediate_sets_ids(self, chat_id):
+        return ChatidSetIntermediate.select(ChatidSetIntermediate.set).where(ChatidSetIntermediate.chat == chat_id).execute()
+
+    def del_ChatidSetIntermediate_by_setId(self, chat_id, set_id):
+        return ChatidSetIntermediate.delete().where((ChatidSetIntermediate.chat == chat_id) \
+                                                & (ChatidSetIntermediate.set == set_id)).execute()
+
+
+
+

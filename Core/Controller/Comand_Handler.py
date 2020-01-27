@@ -39,6 +39,9 @@ class Handler:
         if self.message.text == 'Перейти к вопросам':
             self.__next_question()
 
+        if self.message.text == 'Добавить в избранное':
+            self.__add_to_chosen()
+
     def __go_to_menu(self):
         self.text_response = 'Основное меню.'
         self.markup = tm.Menu().markup
@@ -59,6 +62,12 @@ class Handler:
         self.markup = tm.QAMarkup().markup
         self.is_prepared = True
 
+    def ____add_to_chosen(self):
+        self.set_handler = DB_Handle()
+        last_user_set = self.set_handler.get_user_last_set(self.message.chat.id)
+        self.set_handler.add_to_ChatidSetIntermediate(self.message.chat.id, last_user_set)
+        self.text_response = 'Вопрос добавлен в избранное'
+        self.markup = tm.QAMarkup().markup
 
 
 
