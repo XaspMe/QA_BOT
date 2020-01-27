@@ -163,10 +163,15 @@ class Handler(Model):
     """
     Actions under the ChatidSetIntermediate
     """
+    def is_set_chosen(self, chat_id, set_id):
+        if len(ChatidSetIntermediate.select().where((ChatidSetIntermediate.chat == chat_id) \
+                                                 & (ChatidSetIntermediate.set == set_id)).execute()) > 0:
+            return True
+        else:
+            return False
 
     def add_to_ChatidSetIntermediate(self, chat_id, set_id):
-        if len(ChatidSetIntermediate.select().where((ChatidSetIntermediate.chat == chat_id) \
-                                                & (ChatidSetIntermediate.set == set_id)).execute()) > 0:
+        if self.is_set_chosen(chat_id, set_id):
             pass
         else:
             ChatidSetIntermediate.insert({ChatidSetIntermediate.chat: chat_id, ChatidSetIntermediate.set: set_id}).execute()
@@ -177,6 +182,10 @@ class Handler(Model):
     def del_ChatidSetIntermediate_by_setId(self, chat_id, set_id):
         return ChatidSetIntermediate.delete().where((ChatidSetIntermediate.chat == chat_id) \
                                                 & (ChatidSetIntermediate.set == set_id)).execute()
+
+
+
+
 
 
 

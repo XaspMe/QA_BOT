@@ -42,6 +42,9 @@ class Handler:
         if self.message.text == 'Добавить в избранное':
             self.__add_to_chosen()
 
+        if self.message.text == 'Удалить из избранного':
+            self.__rem_from_chosen()
+
     def __go_to_menu(self):
         self.text_response = 'Основное меню.'
         self.markup = tm.Menu().markup
@@ -52,7 +55,10 @@ class Handler:
         qa_set = self.set_handler.get_random_set_by_groups((1, 2, 3, 4))[0]
         self.set_handler.upd_chat_lastset(self.message.chat.id, qa_set.id)
         self.text_response = qa_set.question + '\n qqqqq'
-        self.markup = tm.QAMarkup().markup
+        if self.set_handler.is_set_chosen(self.message.chat.id, qa_set):
+            self.markup = tm.QAMarkupSetChosen().markup
+        else:
+            self.markup = tm.QAMarkup().markup
         self.is_prepared = True
 
     def __show_answer(self):
@@ -62,12 +68,21 @@ class Handler:
         self.markup = tm.QAMarkup().markup
         self.is_prepared = True
 
-    def ____add_to_chosen(self):
-        self.set_handler = DB_Handle()
+    def ___add_to_chosen(self):
+        self.set_handler = DB_Handle.Handler()
         last_user_set = self.set_handler.get_user_last_set(self.message.chat.id)
         self.set_handler.add_to_ChatidSetIntermediate(self.message.chat.id, last_user_set)
         self.text_response = 'Вопрос добавлен в избранное'
+        self.markup = tm.QAMarkupSetChosen().markup
+        self.is_prepared = True
+
+    def __rem_from_chosen(self):
+        self.set_handler = DB_Handle.Handler()
+        last_user_set = self.set_handler.get_user_last_set(self.message.chat.id)
+        self.set_handler.del_ChatidSetIntermediate_by_setIdself.message.chat.id, last_user_set
+        self.text_response = 'Вопрос удален из избранного'
         self.markup = tm.QAMarkup().markup
+        self.is_prepared = True
 
 
 

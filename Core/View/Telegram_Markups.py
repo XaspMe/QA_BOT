@@ -16,6 +16,21 @@ class QAMarkup:
         self.markup.row(item_menu, item_star)
 
 
+class QAMarkupSetChosen:
+    """
+    Класс QA (Основной набор кнопок) ответа от бота
+    """
+
+    def __init__(self):
+        self.markup = types.ReplyKeyboardMarkup()
+        item_next = types.KeyboardButton('Следующий вопрос')
+        item_answer = types.KeyboardButton('Показать ответ')
+        self.markup.row(item_next, item_answer)
+        item_star = types.KeyboardButton('Удалить из избранного')
+        item_menu = types.KeyboardButton('Меню')
+        self.markup.row(item_menu, item_star)
+
+
 class Menu:
     """
     Класс меню ответа от бота
