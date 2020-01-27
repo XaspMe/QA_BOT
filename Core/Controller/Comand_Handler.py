@@ -45,6 +45,19 @@ class Handler:
         if self.message.text == 'Удалить из избранного':
             self.__rem_from_chosen()
 
+        if self.message.text == 'Выбрать темы':
+            pass
+
+    def __chose_themes(self):
+        self.set_handler = DB_Handle.Handler()
+        user_group_list = self.set_handler.get_chosen_by_chatids_id(self.message.chat.id)
+        system_group_list = self.set_handler.get_groups()
+        prepared_list = ['y'+i for i in user_group_list if i in system_group_list]
+        prepared_list.append('x'+i for i in system_group_list if i in user_group_list)
+        self.text_response = 'Управление темами'
+        self.markup = tm.GroupList(prepared_list).markup
+        self.is_prepared = True
+
     def __go_to_menu(self):
         self.text_response = 'Основное меню.'
         self.markup = tm.Menu().markup
@@ -65,7 +78,10 @@ class Handler:
         self.set_handler = DB_Handle.Handler()
         last_set = self.set_handler.get_user_last_set(self.message.chat.id)
         self.text_response = self.set_handler.get_answer_by_set_id(last_set)
-        self.markup = tm.QAMarkup().markup
+        if self.set_handler.is_set_chosen(self.message.chat.id, qa_set):
+            self.markup = tm.QAMarkupSetChosen().markup
+        else:
+            self.markup = tm.QAMarkup().markup
         self.is_prepared = True
 
     def ___add_to_chosen(self):

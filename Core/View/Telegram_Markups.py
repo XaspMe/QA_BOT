@@ -1,4 +1,5 @@
 from telebot import types
+import emoji
 
 
 class QAMarkup:
@@ -43,3 +44,15 @@ class Menu:
         self.markup.row(item_questions, item_favourites)
         item_groups = types.KeyboardButton('Выбрать темы')
         self.markup.row(item_groups)
+
+
+class GroupList:
+    """
+    """
+    def __init__(self, groups_list):
+        self.markup = types.ReplyKeyboardMarkup()
+        for group in groups_list:
+            item = types.KeyboardButton(group)
+            self.markup.row(item)
+        item_menu = types.KeyboardButton('Меню')
+        self.markup.row(item_menu)

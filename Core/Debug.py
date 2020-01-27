@@ -10,9 +10,7 @@ print(DB_Handle.Handler().get_user_last_set(107))
 
 var = DB_Handle.Handler()
 
-#var.add_to_ChatidSetIntermediate(107, 108)
-
-var.del_ChatidSetIntermediate_by_setId(107,108)
+var.add_chosen(107, (1,2,3,4))
 
 
 

@@ -83,6 +83,18 @@ class Handler(Model):
     """
     ACTION UNDER THE ChosenGroups
     """
+    def is_group_chosen(self, chat_id, group_id):
+        if len(ChosenGroups.select().where((ChosenGroups.chat == chat_id) \
+                                                 & (ChosenGroups.group == group_id)).execute()) > 0:
+            return True
+        else:
+            return False
+
+    def get_chosen_by_chatids_id(self, chat_id):
+        return ChosenGroups.select(ChosenGroups.group).where(ChosenGroups.chat == chat_id).execute()
+
+
+
     def add_chosen(self, chatid, chosenids):
         """
         Users select them favorite groups
@@ -92,8 +104,9 @@ class Handler(Model):
         """
         try:
             with self.db.atomic():
-                for y in chosenids:
-                    ChosenGroups.insert({ChosenGroups.chat : chatid, ChosenGroups.group: y}).execute()
+                for ids in chosenids:
+                    if not self.is_group_chosen(chatid, ids):
+                        ChosenGroups.insert({ChosenGroups.chat : chatid, ChosenGroups.group: ids}).execute()
         except Exception:
             # :TODO добавить запись ошибки в лог и уточнение ошибок по PEP8.
             raise
@@ -133,7 +146,7 @@ class Handler(Model):
 
 
     def get_groups(self):
-        return (Groups.select())
+        return Groups.select().execute()
 
 
     """
