@@ -168,7 +168,7 @@ class Handler(Model):
     """
 
     def get_groups(self):
-        return Groups.select(Groups.id, Groups.name).execute()
+        return Groups.select(Groups.name).execute()
 
     def add_group(self, id, name):
         return Groups.insert({Groups.id: id, Groups.name: name}).execute()
