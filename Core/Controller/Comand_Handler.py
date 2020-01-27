@@ -40,7 +40,7 @@ class Handler:
             self.__next_question()
 
         if self.message.text == 'Добавить в избранное':
-            self.__add_to_chosen()
+            self.___add_to_chosen()
 
         if self.message.text == 'Удалить из избранного':
             self.__rem_from_chosen()
@@ -79,7 +79,7 @@ class Handler:
     def __rem_from_chosen(self):
         self.set_handler = DB_Handle.Handler()
         last_user_set = self.set_handler.get_user_last_set(self.message.chat.id)
-        self.set_handler.del_ChatidSetIntermediate_by_setIdself.message.chat.id, last_user_set
+        self.set_handler.del_ChatidSetIntermediate_by_setId(self.message.chat.id, last_user_set)
         self.text_response = 'Вопрос удален из избранного'
         self.markup = tm.QAMarkup().markup
         self.is_prepared = True
