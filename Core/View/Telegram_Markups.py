@@ -4,7 +4,7 @@ import emoji
 
 class QAMarkup:
     """
-    Класс QA (Основной набор кнопок) ответа от бота
+    Основная разметка для работы с вопросами
     """
 
     def __init__(self):
@@ -19,7 +19,7 @@ class QAMarkup:
 
 class QAMarkupSetChosen:
     """
-    Класс QA (Основной набор кнопок) ответа от бота
+    Разметка для вопроса, который добавлен в избранные
     """
 
     def __init__(self):
@@ -34,20 +34,23 @@ class QAMarkupSetChosen:
 
 class Menu:
     """
-    Класс меню ответа от бота
+    Разметка меню
     """
-
     def __init__(self):
-        self.markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        item_questions = types.KeyboardButton('Перейти к вопросам')
-        item_favourites = types.KeyboardButton('Избранные вопросы')
-        self.markup.row(item_questions, item_favourites)
-        item_groups = types.KeyboardButton('Выбрать темы')
-        self.markup.row(item_groups)
+        """
+        Конструктор
+        """
+        self.markup = types.ReplyKeyboardMarkup(resize_keyboard=True)  # Добавляем переменную, разрешить резайз (подгон по размеру)
+        item_questions = types.KeyboardButton('Перейти к вопросам')  # Переменная хранит кнопку клавиатуры
+        item_favourites = types.KeyboardButton('Избранные вопросы')  # Переменная хранит кнопку клавиатуры
+        self.markup.row(item_questions, item_favourites)  # Добавляем строку кнопок, передаем в нее две кнопки
+        item_groups = types.KeyboardButton('Выбрать темы')  # Переменная хранит кнопку клавиатуры
+        self.markup.row(item_groups)  # Добавляем строку кнопок, передаем в одну кнопку
 
 
 class GroupList:
     """
+    Разметка выводит все группы строками кнопок, через переданный аргумент
     """
     def __init__(self, groups_list):
         self.markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -56,3 +59,14 @@ class GroupList:
             self.markup.row(item)
         item_menu = types.KeyboardButton('Меню')
         self.markup.row(item_menu)
+
+class AdminMenu:
+    """
+    TODO: На примере класса Menu добавить конструктор __init__ который будет добавлять 4 строки кнопок, по 2 кнопки в строке
+    Кнопки должны быть следующие:
+    Показать кол-во вопросов | Показать кол-во групп
+    Отправить сообщение всем пользователям | Показать всех пользователей
+    Добавить вопрос | Добавить группу
+    Корректировать вопрос | Показать коррекции присланные пользователями
+    """
+    pass
