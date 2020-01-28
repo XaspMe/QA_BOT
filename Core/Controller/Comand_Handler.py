@@ -1,5 +1,6 @@
 from Core.Controller import DB_Handle, User_validation
 from Core.View import Telegram_Markups as tm
+import emoji
 from Core.Controller import DB_Handle as db
 from telebot import *
 
@@ -33,6 +34,7 @@ class Handler:
         if self.message.text == 'Меню' or \
                 self.message.text == 'start' or \
                 self.message.text == 'help' or \
+                self.message.text == '/start' or \
                 self.message.text == '/help':
             self.__go_to_menu()
 
@@ -45,6 +47,32 @@ class Handler:
         if self.message.text == 'Удалить из избранного':
             self.__rem_from_chosen()
 
+        if self.message.text == 'Выбрать темы':
+            self.__chose_themes()
+
+        if '👍' in self.message.text or \
+            '👎' in self.message.text:
+            self.__change_themes()
+
+    def __change_themes(self):
+        print('TRigger')
+        self.set_handler = DB_Handle.Handler()
+        print(self.message.text[2:])
+        self.set_handler.invert_chosen(self.message.chat.id, self.message.text[2:])
+        self.__chose_themes()
+
+    def __chose_themes(self):
+        self.set_handler = DB_Handle.Handler()
+        groups_list = []
+        for theme in self.set_handler.get_groups():
+            if self.set_handler.is_group_chosen(self.message.chat.id, theme.id):
+                groups_list.append('👍 ' + theme.name)
+            else:
+                groups_list.append('👎 ' + theme.name)
+        self.text_response = 'Выберите группу'
+        self.markup = tm.GroupList(groups_list).markup
+        self.is_prepared = True
+
     def __go_to_menu(self):
         self.text_response = 'Основное меню.'
         self.markup = tm.Menu().markup
@@ -52,21 +80,32 @@ class Handler:
 
     def __next_question(self):
         self.set_handler = DB_Handle.Handler()
-        qa_set = self.set_handler.get_random_set_by_groups((1, 2, 3, 4))[0]
-        self.set_handler.upd_chat_lastset(self.message.chat.id, qa_set.id)
-        set_theme = self.set_handler.get_group_name_by_set_id(qa_set)
-        self.text_response = f'Раздел: {set_theme} \n{qa_set.question}'
-        if self.set_handler.is_set_chosen(self.message.chat.id, qa_set):
-            self.markup = tm.QAMarkupSetChosen().markup
+        self.selected = []
+
+        for x in self.set_handler.get_chosen_by_chatids_id(self.message.chat.id):
+            print(x.group_id)
+            self.selected.append(x.group_id)
+        if not len(self.selected) < 1:
+            qa_set = self.set_handler.get_random_set_by_groups(self.selected)[0]
+            self.set_handler.upd_chat_lastset(self.message.chat.id, qa_set.id)
+            set_theme = self.set_handler.get_group_name_by_set_id(qa_set)
+            self.text_response = f'Раздел: {set_theme} \n{qa_set.question}'
+            if self.set_handler.is_set_chosen(self.message.chat.id, qa_set):
+                self.markup = tm.QAMarkupSetChosen().markup
+            else:
+                self.markup = tm.QAMarkup().markup
+            self.is_prepared = True
         else:
-            self.markup = tm.QAMarkup().markup
-        self.is_prepared = True
+            self.__chose_themes()
 
     def __show_answer(self):
         self.set_handler = DB_Handle.Handler()
         last_set = self.set_handler.get_user_last_set(self.message.chat.id)
         self.text_response = self.set_handler.get_answer_by_set_id(last_set)
-        self.markup = tm.QAMarkup().markup
+        if self.set_handler.is_set_chosen(self.message.chat.id, last_set):
+            self.markup = tm.QAMarkupSetChosen().markup
+        else:
+            self.markup = tm.QAMarkup().markup
         self.is_prepared = True
 
     def ___add_to_chosen(self):

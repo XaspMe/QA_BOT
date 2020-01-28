@@ -35,7 +35,7 @@ class Handler(Model):
         :return: Code 0 - id exist, Code 1 - OK, Code 3 - wrapped exception
         """
         try:
-            return ChatIDs.insert({ChatIDs.chat_id: id, ChatIDs.user_name: username}).execute()
+            return ChatIDs.insert({ChatIDs.chat_id: id}).execute()
         except Exception:
             # :TODO добавить запись ошибки в лог и уточнение ошибок по PEP8.
             raise
@@ -83,6 +83,26 @@ class Handler(Model):
     """
     ACTION UNDER THE ChosenGroups
     """
+    def is_group_chosen(self, chat_id, group_id):
+        if len(ChosenGroups.select().where((ChosenGroups.chat == chat_id) \
+                                                 & (ChosenGroups.group == group_id)).execute()) > 0:
+            return True
+        else:
+            return False
+
+    def get_chosen_by_chatids_id(self, chat_id):
+        return ChosenGroups.select(ChosenGroups.group, ChosenGroups.group_id).where(ChosenGroups.chat == chat_id).execute()
+
+    def invert_chosen(self, chatid, chosentext):
+        print(chosentext)
+        chosenids = None
+        chosenids = Groups.select(Groups.id).where(Groups.name == chosentext).execute()[0].id
+        if self.is_group_chosen(chatid, chosenids):
+            ChosenGroups.delete().where((ChosenGroups.chat == chatid) & (ChosenGroups.group == chosenids)).execute()
+        else:
+            self.add_chosen(chatid, (chosenids,))
+
+
     def add_chosen(self, chatid, chosenids):
         """
         Users select them favorite groups
@@ -92,8 +112,9 @@ class Handler(Model):
         """
         try:
             with self.db.atomic():
-                for y in chosenids:
-                    ChosenGroups.insert({ChosenGroups.chat : chatid, ChosenGroups.group: y}).execute()
+                for ids in chosenids:
+                    if not self.is_group_chosen(chatid, ids):
+                        ChosenGroups.insert({ChosenGroups.chat : chatid, ChosenGroups.group: ids}).execute()
         except Exception:
             # :TODO добавить запись ошибки в лог и уточнение ошибок по PEP8.
             raise
@@ -133,7 +154,9 @@ class Handler(Model):
 
 
     def get_groups(self):
-        return (Groups.select())
+        return Groups.select().execute()
+
+
 
     def get_group_name_by_id(self, id):
         return Groups.select().where(Groups.id == id).execute()[0].name
@@ -168,7 +191,7 @@ class Handler(Model):
     """
 
     def get_groups(self):
-        return Groups.select(Groups.id, Groups.name).execute()
+        return Groups.select(Groups.name, Groups.id).execute()
 
     def add_group(self, id, name):
         return Groups.insert({Groups.id: id, Groups.name: name}).execute()

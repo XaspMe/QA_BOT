@@ -31,8 +31,8 @@ class ChatIDs(BaseModel):
     Save all users to table and them step/state of using
     """
     id = AutoField()  # PK
-    chat_id = TextField(unique=True, null=False)  # Telegram chat ID
-    user_name = TextField()  # Telegram user name of user
+    chat_id = TextField(null=False)  # Telegram chat ID
+    user_name = TextField(null=True)  # Telegram user name of user
     last_set = ForeignKeyField(Sets, null=True)  # Last set of conversation.
 
 
