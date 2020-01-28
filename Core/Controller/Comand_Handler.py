@@ -16,11 +16,11 @@ from telebot import *
 
 
 class Handler:
-    def __init__(self, message):
+    def __init__(self, message: str) -> None:
         self.message = message
         self.is_prepared = None
 
-    def handle(self):
+    def handle(self) -> None:
         print(self.message.text)
         validate = User_validation.UserValidation(self.message.chat.id, self.message.from_user.username)
         validate.check_or_create()
@@ -55,9 +55,7 @@ class Handler:
             self.__change_themes()
 
     def __change_themes(self):
-        print('TRigger')
         self.set_handler = DB_Handle.Handler()
-        print(self.message.text[2:])
         self.set_handler.invert_chosen(self.message.chat.id, self.message.text[2:])
         self.__chose_themes()
 

@@ -13,7 +13,7 @@ class Handler(Model):
     """
     db = SqliteDatabase(cf.Configuration().db_name)
 
-    def create_db_and_tables(self):
+    def create_db_and_tables(self) -> int:
         """
         Создание базы данных и необходимых таблиц из DB_MODEL.
         """
@@ -206,7 +206,7 @@ class Handler(Model):
         else:
             return False
 
-    def add_to_ChatidSetIntermediate(self, chat_id, set_id):
+    def add_to_ChatidSetIntermediate(self, chat_id: int, set_id: int) -> None:
         if self.is_set_chosen(chat_id, set_id):
             pass
         else:
