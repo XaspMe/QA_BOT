@@ -166,6 +166,7 @@ class InvertChosen(AbstractHandler):
         else:
             self.markup = tm.QAMarkup().markup
 
+
 class Nothing(AbstractHandler):
     def __init__(self, message):
         super().__init__(message)
@@ -175,5 +176,3 @@ class Nothing(AbstractHandler):
 
     def prepare_markup(self) -> None:
         self.markup = tm.Menu().markup
-
-

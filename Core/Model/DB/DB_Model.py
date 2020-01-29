@@ -33,6 +33,7 @@ class ChatIDs(BaseModel):
     id = AutoField()  # PK
     chat_id = TextField(null=False)  # Telegram chat ID
     user_name = TextField(null=True)  # Telegram user name of user
+    is_admin = BooleanField(null=False, default=False)
     last_set = ForeignKeyField(Sets, null=True)  # Last set of conversation.
 
 

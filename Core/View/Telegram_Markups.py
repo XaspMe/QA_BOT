@@ -60,32 +60,25 @@ class GroupList:
         item_menu = types.KeyboardButton('Меню')
         self.markup.row(item_menu)
 
+
 class AdminMenu:
     """
     Разметка меню администратора
     """
-    pass
     def __init__(self):
-	  self.markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-          item_howmanyquestions = types.KeyboardButton('Показать кол-во вопросов')
-          item_howmanygroups = types.KeyboardButton('Показать кол-во групп')
-          self.markup.row(item_howmanyquestions, item_howmanygroups)
-      
-          item_sendtoall=types.KeyboardButton('Сообщение всем пользователям')
-          item_showallusers=types.KeyboardButton('Показать всех пользователей')
-          self.markup.row(item_sendtoall, item_showallusers)
-      
-          item_addquestion=types.KeyboardButton('Добавить вопрос')
-          item_addgroup=types.KeyboardButton('Добавить группу')
-          self.markup.row(item_addquestion, item_addgroup)
-       
-          item_correctquestion=types.KeyboardButton('Корректировать вопрос')
-          item_userscorrects=types.Keyboardbutton('Корректировки пользователей')
-          self.markup.row(item_correctquestion, item_userscorrects)
-       
-      
-      
-      
-      
-    
-          pass
+        self.markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item_how_many_questions = types.KeyboardButton('Показать кол-во вопросов')
+        item_how_many_groups = types.KeyboardButton('Показать кол-во групп')
+        self.markup.row(item_how_many_questions, item_how_many_groups)
+
+        item_send_to_all = types.KeyboardButton('Сообщение всем пользователям')
+        item_show_all_users=types.KeyboardButton('Показать всех пользователей')
+        self.markup.row(item_send_to_all, item_show_all_users)
+
+        item_add_question = types.KeyboardButton('Добавить вопрос')
+        item_add_group = types.KeyboardButton('Добавить группу')
+        self.markup.row(item_add_question, item_add_group)
+
+        item_correct_question = types.KeyboardButton('Корректировать вопрос')
+        item_users_corrects = types.Keyboardbutton('Корректировки пользователей')
+        self.markup.row(item_correct_question, item_users_corrects)

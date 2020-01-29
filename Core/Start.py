@@ -1,7 +1,7 @@
 from telebot.apihelper import _convert_markup
 
 import Core.Controller.DB_Handle as db_handler
-import Core.Controller.Comand_Handler as ch
+import Core.Controller.Command_Handler_Strategy as ch
 from Core.Configuration import *
 from Core.Self_Check import Diagnostics
 from telebot import *
@@ -17,7 +17,6 @@ except Exception as e:
 
 
 bot = TeleBot(Configuration().token)
-
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def handle_messages(message):
