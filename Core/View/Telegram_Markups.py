@@ -62,11 +62,30 @@ class GroupList:
 
 class AdminMenu:
     """
-    TODO: На примере класса Menu добавить конструктор __init__ который будет добавлять 4 строки кнопок, по 2 кнопки в строке
-    Кнопки должны быть следующие:
-    Показать кол-во вопросов | Показать кол-во групп
-    Отправить сообщение всем пользователям | Показать всех пользователей
-    Добавить вопрос | Добавить группу
-    Корректировать вопрос | Показать коррекции присланные пользователями
+    Разметка меню администратора
     """
     pass
+    def __init__(self):
+	  self.markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+          item_howmanyquestions = types.KeyboardButton('Показать кол-во вопросов')
+          item_howmanygroups = types.KeyboardButton('Показать кол-во групп')
+          self.markup.row(item_howmanyquestions, item_howmanygroups)
+      
+          item_sendtoall=types.KeyboardButton('Сообщение всем пользователям')
+          item_showallusers=types.KeyboardButton('Показать всех пользователей')
+          self.markup.row(item_sendtoall, item_showallusers)
+      
+          item_addquestion=types.KeyboardButton('Добавить вопрос')
+          item_addgroup=types.KeyboardButton('Добавить группу')
+          self.markup.row(item_addquestion, item_addgroup)
+       
+          item_correctquestion=types.KeyboardButton('Корректировать вопрос')
+          item_userscorrects=types.Keyboardbutton('Корректировки пользователей')
+          self.markup.row(item_correctquestion, item_userscorrects)
+       
+      
+      
+      
+      
+    
+          pass
