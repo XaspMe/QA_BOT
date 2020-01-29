@@ -5,7 +5,7 @@ import Core.Controller.Comand_Handler as ch
 from Core.Configuration import *
 from Core.Self_Check import Diagnostics
 from telebot import *
-from Core.Controller.Comands import Handler_Mediator as hm
+from Core.Controller.Comands import Command_Factory as hm
 
 
 try:
@@ -21,9 +21,9 @@ bot = TeleBot(Configuration().token)
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def handle_messages(message):
-    handler = hm.NextQuestion(message)
-    if handler.is_prepared:
-        bot.send_message(message.chat.id, handler.text_response, reply_markup=handler.markup)
+    handler = ch.Handler().Operate(message)
+    handler.template_handler_method()
+    bot.send_message(message.chat.id, handler.text_response, reply_markup=handler.markup)
 
 
 bot.polling()

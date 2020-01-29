@@ -90,7 +90,7 @@ class Handler(Model):
         else:
             return False
 
-    def get_chosen_by_chatids_id(self, chat_id):
+    def get_chosenGroups_by_chatids_id(self, chat_id):
         return ChosenGroups.select(ChosenGroups.group, ChosenGroups.group_id).where(ChosenGroups.chat == chat_id).execute()
 
     def invert_chosen(self, chatid, chosentext):
@@ -182,7 +182,7 @@ class Handler(Model):
         random_group = random.choice(groups)
         return Sets.select(Sets.id, Sets.question).where(Sets.qa_group == random_group).order_by(fn.Random()).execute()
 
-    def get_answer_by_set_id(id, last_set):
+    def get_answer_by_set_id(self, last_set):
         return Sets.select(Sets.answer).where(Sets.id == last_set).execute()[0].answer
 
 
