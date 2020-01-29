@@ -1,11 +1,11 @@
 from telebot.apihelper import _convert_markup
 
 import Core.Controller.DB_Handle as db_handler
-import Core.Controller.Comand_Handler as ch
+import Core.Controller.Command_Handler_Strategy as ch
 from Core.Configuration import *
 from Core.Self_Check import Diagnostics
 from telebot import *
-
+from Core.Controller.Comands import Command_Factory as hm
 
 
 try:
@@ -18,13 +18,11 @@ except Exception as e:
 
 bot = TeleBot(Configuration().token)
 
-
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def handle_messages(message):
-    handler = ch.Handler(message)
-    handler.handle()
-    if handler.is_prepared:
-        bot.send_message(message.chat.id, handler.text_response, reply_markup=handler.markup)
+    handler = ch.Handler().Operate(message)
+    handler.template_handler_method()
+    bot.send_message(message.chat.id, handler.text_response, reply_markup=handler.markup)
 
 
 bot.polling()

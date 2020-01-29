@@ -1,9 +1,10 @@
-from Core.Model.DB.DB_Model import Groups, Sets, ChatIDs, ChosenGroups, FavouritesSet
+from Core.Model.DB.DB_Model import Groups, Sets, ChatIDs, ChosenGroups, ChatidSetIntermediate
 from Core import Configuration as cf
 from peewee import *
 
 import random
 
+class ChatidSetIntermediateException(Exception): pass
 
 
 class Handler(Model):
@@ -12,12 +13,12 @@ class Handler(Model):
     """
     db = SqliteDatabase(cf.Configuration().db_name)
 
-    def create_db_and_tables(self):
+    def create_db_and_tables(self) -> int:
         """
         Создание базы данных и необходимых таблиц из DB_MODEL.
         """
         with self.db:
-            return self.db.create_tables([Groups, Sets, ChatIDs, ChosenGroups, FavouritesSet]) # Create the tables.
+            return self.db.create_tables([Groups, Sets, ChatIDs, ChosenGroups, ChatidSetIntermediate])  # Create the tables.
 
 
     """
@@ -34,7 +35,7 @@ class Handler(Model):
         :return: Code 0 - id exist, Code 1 - OK, Code 3 - wrapped exception
         """
         try:
-            return ChatIDs.insert({ChatIDs.chat_id: id, ChatIDs.user_name: username}).execute()
+            return ChatIDs.insert({ChatIDs.chat_id: id}).execute()
         except Exception:
             # :TODO добавить запись ошибки в лог и уточнение ошибок по PEP8.
             raise
@@ -82,6 +83,26 @@ class Handler(Model):
     """
     ACTION UNDER THE ChosenGroups
     """
+    def is_group_chosen(self, chat_id, group_id):
+        if len(ChosenGroups.select().where((ChosenGroups.chat == chat_id) \
+                                                 & (ChosenGroups.group == group_id)).execute()) > 0:
+            return True
+        else:
+            return False
+
+    def get_chosenGroups_by_chatids_id(self, chat_id):
+        return ChosenGroups.select(ChosenGroups.group, ChosenGroups.group_id).where(ChosenGroups.chat == chat_id).execute()
+
+    def invert_chosen(self, chatid, chosentext):
+        print(chosentext)
+        chosenids = None
+        chosenids = Groups.select(Groups.id).where(Groups.name == chosentext).execute()[0].id
+        if self.is_group_chosen(chatid, chosenids):
+            ChosenGroups.delete().where((ChosenGroups.chat == chatid) & (ChosenGroups.group == chosenids)).execute()
+        else:
+            self.add_chosen(chatid, (chosenids,))
+
+
     def add_chosen(self, chatid, chosenids):
         """
         Users select them favorite groups
@@ -91,8 +112,9 @@ class Handler(Model):
         """
         try:
             with self.db.atomic():
-                for y in chosenids:
-                    ChosenGroups.insert({ChosenGroups.chat : chatid, ChosenGroups.group: y}).execute()
+                for ids in chosenids:
+                    if not self.is_group_chosen(chatid, ids):
+                        ChosenGroups.insert({ChosenGroups.chat : chatid, ChosenGroups.group: ids}).execute()
         except Exception:
             # :TODO добавить запись ошибки в лог и уточнение ошибок по PEP8.
             raise
@@ -132,20 +154,35 @@ class Handler(Model):
 
 
     def get_groups(self):
-        return (Groups.select())
+        return Groups.select().execute()
+
+
+
+    def get_group_name_by_id(self, id):
+        return Groups.select().where(Groups.id == id).execute()[0].name
+
+    def get_group_name_by_set_id(self, id):
+        set_id = Sets.select(Sets.qa_group).where(Sets.id == id).execute()
+        if len(set_id) > 0:
+            return self.get_group_name_by_id(set_id[0].qa_group)
+        else:
+            #TODO: Добавить кастомное исключение
+            pass
+
+
 
 
     """
     ACTION UNDER THE Sets
     """
     def add_set(self, group, question, answer):
-        return Sets.insert({Sets.qa_group: group, Sets.question : question, Sets.answer: answer}).execute()
+        return Sets.insert({Sets.qa_group: group, Sets.question: question, Sets.answer: answer}).execute()
 
     def get_random_set_by_groups(self, groups):
         random_group = random.choice(groups)
         return Sets.select(Sets.id, Sets.question).where(Sets.qa_group == random_group).order_by(fn.Random()).execute()
 
-    def get_answer_by_set_id(id, last_set):
+    def get_answer_by_set_id(self, last_set):
         return Sets.select(Sets.answer).where(Sets.id == last_set).execute()[0].answer
 
 
@@ -154,17 +191,38 @@ class Handler(Model):
     """
 
     def get_groups(self):
-        return Groups.select(Groups.id, Groups.name).execute()
+        return Groups.select(Groups.name, Groups.id).execute()
 
     def add_group(self, id, name):
         return Groups.insert({Groups.id: id, Groups.name: name}).execute()
 
     """
-    Actions under FavouritesSet
+    Actions under the ChatidSetIntermediate
     """
+    def is_set_chosen(self, chat_id, set_id):
+        if len(ChatidSetIntermediate.select().where((ChatidSetIntermediate.chat == chat_id) \
+                                                 & (ChatidSetIntermediate.set == set_id)).execute()) > 0:
+            return True
+        else:
+            return False
 
-    def add_to_favourites(self, chat_id, set_id):
-        return FavouritesSet.insert({FavouritesSet.chat : chat_id, FavouritesSet.set: set_id}).execute()
+    def add_to_ChatidSetIntermediate(self, chat_id: int, set_id: int) -> None:
+        if self.is_set_chosen(chat_id, set_id):
+            pass
+        else:
+            ChatidSetIntermediate.insert({ChatidSetIntermediate.chat: chat_id, ChatidSetIntermediate.set: set_id}).execute()
 
-    def del_from_favourites(self, chat_id, set_id):
-        return FavouritesSet.delete().where(FavouritesSet.chat == chat_id, FavouritesSet.set == set_id).execute()
+    def get_ChatidSetIntermediate_sets_ids(self, chat_id):
+        return ChatidSetIntermediate.select(ChatidSetIntermediate.set).where(ChatidSetIntermediate.chat == chat_id).execute()
+
+    def del_ChatidSetIntermediate_by_setId(self, chat_id, set_id):
+        return ChatidSetIntermediate.delete().where((ChatidSetIntermediate.chat == chat_id) \
+                                                & (ChatidSetIntermediate.set == set_id)).execute()
+
+
+
+
+
+
+
+

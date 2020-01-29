@@ -31,8 +31,9 @@ class ChatIDs(BaseModel):
     Save all users to table and them step/state of using
     """
     id = AutoField()  # PK
-    chat_id = TextField(unique=True, null=False)  # Telegram chat ID
-    user_name = TextField()  # Telegram user name of user
+    chat_id = TextField(null=False)  # Telegram chat ID
+    user_name = TextField(null=True)  # Telegram user name of user
+    is_admin = BooleanField(null=False, default=False)
     last_set = ForeignKeyField(Sets, null=True)  # Last set of conversation.
 
 
@@ -45,7 +46,10 @@ class ChosenGroups(BaseModel):
     group = ForeignKeyField(Groups, null=False)  # group FK
 
 
-class FavouritesSet(BaseModel):
-    id = AutoField()  # PK
-    chat = ForeignKeyField(ChatIDs, null=False)
-    set = ForeignKeyField(Sets, null=False)
+class ChatidSetIntermediate(BaseModel):
+    """
+    User chosen set
+    """
+    id = AutoField()
+    chat = ForeignKeyField(ChatIDs, null=False)  # chat FK
+    set = ForeignKeyField(Sets, null=False)  # set FK
