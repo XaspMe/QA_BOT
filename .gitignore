@@ -1,6 +1,5 @@
 
 .idea/
-Configuration.py
 Core/__pycache__/
 venv/Scripts/
 venv/
