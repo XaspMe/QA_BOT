@@ -1,5 +1,5 @@
 from pathlib import Path
-s
+
 class Configuration:
     """
     Represent application configuration.
