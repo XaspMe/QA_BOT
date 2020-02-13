@@ -1,5 +1,5 @@
 from telebot.apihelper import _convert_markup
-
+from Core import Self_Check
 import Core.Controller.DB_Handle as db_handler
 import Core.Controller.Command_Handler_Strategy as ch
 from Core.Configuration import *
@@ -9,7 +9,7 @@ from Core.Controller.Comands import Command_Factory as hm
 
 
 try:
-    diagnostic = Diagnostics(Configuration()).start()
+    Self_Check.Diagnostics().Run()
 except Exception as e:
     print(e)
 
