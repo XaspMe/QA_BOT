@@ -30,6 +30,7 @@ class Configuration(metaclass=SingletonMeta):
         self.db_name = self.path_to_app_root / self.config.get('DB', 'DB_name')
         self.token = self.config.get('Telegram', 'Token')
         self.wan_check_adress = self.config.get('application', 'WAN_check_addresses').split(';')
+        self.xml_source = self.path_to_app_root / self.config.get('application', 'XML_QA_source_name')
 
     def get_core_path(file_name: str = __file__) -> str:
         """

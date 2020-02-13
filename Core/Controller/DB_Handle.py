@@ -175,6 +175,10 @@ class Handler(Model):
     """
     ACTION UNDER THE Sets
     """
+    def get_sets_count(self):
+        cnt = Sets.select().execute()
+        return cnt
+
     def add_set(self, group, question, answer):
         return Sets.insert({Sets.qa_group: group, Sets.question: question, Sets.answer: answer}).execute()
 
