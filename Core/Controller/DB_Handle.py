@@ -1,5 +1,5 @@
 from Core.Model.DB.DB_Model import Groups, Sets, ChatIDs, ChosenGroups, ChatidSetIntermediate
-from Core import Configuration as cf
+from Core import Configuration_Singleton as cf
 from peewee import *
 
 import random

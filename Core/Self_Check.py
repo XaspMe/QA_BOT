@@ -1,4 +1,4 @@
-from Core.Configuration import Configuration
+from Core.Configuration_Singleton import Configuration
 from Core.Controller.DB_Handle import Handler
 
 import os
