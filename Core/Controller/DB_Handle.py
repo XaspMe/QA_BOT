@@ -1,4 +1,4 @@
-from Core.Model.DB.DB_Model import Groups, Sets, ChatIDs, ChosenGroups, ChatidSetIntermediate
+from Core.Model.DB.DB_Model import Groups, Sets, ChatIDs, ChosenGroups, ChatidSetIntermediate, CommunicationsRecords
 from Maintenance import Configuration_Singleton as cf
 from peewee import *
 
@@ -22,7 +22,12 @@ class Handler(Model):
         """
         logging.debug('Called')
         with self.db:
-            return self.db.create_tables([Groups, Sets, ChatIDs, ChosenGroups, ChatidSetIntermediate])  # Create the tables.
+            return self.db.create_tables([Groups,
+                                          Sets,
+                                          ChatIDs,
+                                          ChosenGroups,
+                                          ChatidSetIntermediate,
+                                          CommunicationsRecords])  # Create the tables.
 
 
     """
@@ -242,6 +247,16 @@ class Handler(Model):
         return ChatidSetIntermediate.delete().where((ChatidSetIntermediate.chat == chat_id) \
                                                 & (ChatidSetIntermediate.set == set_id)).execute()
 
+    """
+    Actions under the CommunicationsRecords table
+    """
+    def add_communications_record(self, chat_id, user_message, bot_response):
+        try:
+            CommunicationsRecords.insert({CommunicationsRecords.user_message: user_message,
+                                          CommunicationsRecords.bot_response: bot_response,
+                                          CommunicationsRecords.chat: chat_id}).execute()
+        except Exception as e:
+            logging.error(e)
 
 
 

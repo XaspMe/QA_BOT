@@ -4,12 +4,14 @@ from Core.View import Telegram_Markups as tm
 import emoji
 from Core.Controller import DB_Handle as db
 from telebot import *
+import logging
 
 class UserAccessError(Exception): pass
 
 class AbstractHandler(ABC):
 
     def __init__(self, message) -> None:
+        logging.getLogger(__name__)
         self.message = message
         self.text_response = ''
         self.prepared = False
@@ -20,6 +22,7 @@ class AbstractHandler(ABC):
         self.prepare_text()
         self.print_answer()
         self.prepare_markup()
+        self.write_communictaion_record()
 
     def check_user(self) -> None:
         validate = User_validation.UserValidation(self.message.chat.id, self.message.from_user.username)
@@ -43,6 +46,14 @@ class AbstractHandler(ABC):
     @abstractmethod
     def prepare_markup(self) -> None:
         pass
+
+    def write_communictaion_record(self):
+        try:
+            DB_Handle.Handler().add_communications_record(user_message=self.message.text,
+                                                          bot_response=self.text_response,
+                                                          chat_id=self.message.chat.id)
+        except Exception as e:
+            logging.error(e)
 
 class AdminComandsHandler(AbstractHandler, ABC):
 

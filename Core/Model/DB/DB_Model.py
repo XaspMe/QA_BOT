@@ -1,5 +1,6 @@
 from peewee import *
 from Maintenance import Configuration_Singleton as cf
+import datetime
 
 
 class BaseModel(Model):
@@ -53,3 +54,14 @@ class ChatidSetIntermediate(BaseModel):
     id = AutoField()
     chat = ForeignKeyField(ChatIDs, null=False)  # chat FK
     set = ForeignKeyField(Sets, null=False)  # set FK
+
+
+class CommunicationsRecords(BaseModel):
+    """
+    All conversation record
+    """
+    id = AutoField()
+    chat = ForeignKeyField(ChatIDs, null=False)  # chat FK
+    user_message = TextField(null=True, default='_')
+    bot_response = TextField(null=True, default='_')
+    time_stamp = DateTimeField(null=False, default = datetime.datetime.now) #
