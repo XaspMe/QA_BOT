@@ -5,6 +5,7 @@ import emoji
 from Core.Controller import DB_Handle as db
 from telebot import *
 
+class UserAccessError(Exception): pass
 
 class AbstractHandler(ABC):
 
@@ -50,12 +51,12 @@ class AdminComandsHandler(AbstractHandler, ABC):
         validate.check_or_create()
         set_handler = DB_Handle.Handler()
         if not set_handler.user_is_admin(self.message.chat.id):
-            raise Exception('User is not admin')
+            raise UserAccessError('User is not admin')
     pass
 
 class AdminPanel(AdminComandsHandler):
     def __init__(self, message):
-        super.__init__(message)
+        super().__init__(message)
 
     def prepare_text(self) -> None:
         self.text_response = 'Панель администраттора'

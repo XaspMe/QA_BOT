@@ -47,7 +47,7 @@ class Messages_hanlder:
         elif message.text == '/adm':
             try:
                 return Command_Factory.AdminPanel(message)
-            except:
+            except Command_Factory.UserAccessError:
                 return Command_Factory.Nothing(message)
 
         else:

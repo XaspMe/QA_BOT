@@ -80,5 +80,5 @@ class AdminMenu:
         self.markup.row(item_add_question, item_add_group)
 
         item_correct_question = types.KeyboardButton('Корректировать вопрос')
-        item_users_corrects = types.Keyboardbutton('Корректировки пользователей')
+        item_users_corrects = types.KeyboardButton('Корректировки пользователей')
         self.markup.row(item_correct_question, item_users_corrects)
