@@ -30,7 +30,7 @@ class Configuration(metaclass=SingletonMeta):
         self.log_name = self.path_to_app_root / self.config.get('application', 'Log_name')
         self.db_name = self.path_to_app_root / self.config.get('DB', 'DB_name')
         self.wan_check_adress = self.config.get('application', 'WAN_check_addresses').split(';')
-        self.xml_source = self.path_to_app_root / self.config.get('application', 'XML_QA_source_name')
+        self.xml_source = self.path_to_app_root / 'Maintenance' / self.config.get('application', 'XML_QA_source_name')
 
     def get_root_path(self) -> Path:
         """

@@ -10,7 +10,7 @@ class UserValidation:
         :param id:
         """
         logging.getLogger(__name__)
-        logging.info('Ctor initiated')
+        logging.debug('Called')
         self.id = id
         self.user_name = name
         self.handler = DB_Handle.Handler()

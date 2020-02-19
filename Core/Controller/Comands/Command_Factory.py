@@ -43,8 +43,28 @@ class AbstractHandler(ABC):
     def prepare_markup(self) -> None:
         pass
 
+class AdminComandsHandler(AbstractHandler, ABC):
 
-class NotCHosenGroups(AbstractHandler):
+    def check_user(self) -> None:
+        validate = User_validation.UserValidation(self.message.chat.id, self.message.from_user.username)
+        validate.check_or_create()
+        set_handler = DB_Handle.Handler()
+        if not set_handler.user_is_admin(self.message.chat.id):
+            raise Exception('User is not admin')
+    pass
+
+class AdminPanel(AdminComandsHandler):
+    def __init__(self, message):
+        super.__init__(message)
+
+    def prepare_text(self) -> None:
+        self.text_response = 'Панель администраттора'
+
+    def prepare_markup(self):
+        self.markup = tm.AdminMenu().markup
+
+
+class NotChosenGroups(AbstractHandler):
     def __init__(self, message):
         super().__init__(message)
         self.set_handler = DB_Handle.Handler()

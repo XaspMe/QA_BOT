@@ -17,7 +17,7 @@ class Messages_hanlder:
             if len(db.Handler().get_chosenGroups_by_chatids_id(message.chat.id)) > 0:
                 return Command_Factory.NextQuestion(message)
             else:
-                return Command_Factory.NotCHosenGroups(message)
+                return Command_Factory.NotChosenGroups(message)
 
         elif message.text == 'Показать ответ':
             return Command_Factory.Answer(message)
@@ -33,7 +33,7 @@ class Messages_hanlder:
             if len(db.Handler().get_chosenGroups_by_chatids_id(message.chat.id)) > 0:
                 return Command_Factory.NextQuestion(message)
             else:
-                return Command_Factory.NotCHosenGroups(message)
+                return Command_Factory.NotChosenGroups(message)
 
         elif message.text == 'Добавить в избранное' or \
                 message.text == 'Удалить из избранного':
@@ -45,7 +45,10 @@ class Messages_hanlder:
             return Command_Factory.Themes(message)
 
         elif message.text == '/adm':
-            return
+            try:
+                return Command_Factory.AdminPanel(message)
+            except:
+                return Command_Factory.Nothing(message)
 
         else:
             return Command_Factory.Nothing(message)
