@@ -1,8 +1,9 @@
 from Core.Model.DB.DB_Model import Groups, Sets, ChatIDs, ChosenGroups, ChatidSetIntermediate
-from Core import Configuration_Singleton as cf
+from Maintenance import Configuration_Singleton as cf
 from peewee import *
 
 import random
+import logging
 
 class ChatidSetIntermediateException(Exception): pass
 
@@ -11,12 +12,15 @@ class Handler(Model):
     """
     Класс контекста базы данных (ORM)
     """
+    logging.getLogger(__name__)
+
     db = SqliteDatabase(cf.Configuration().db_name)
 
     def create_db_and_tables(self) -> int:
         """
         Создание базы данных и необходимых таблиц из DB_MODEL.
         """
+        logging.debug('Called')
         with self.db:
             return self.db.create_tables([Groups, Sets, ChatIDs, ChosenGroups, ChatidSetIntermediate])  # Create the tables.
 
@@ -25,6 +29,7 @@ class Handler(Model):
     ACTION UNDER THE ChatIDS
     """
     def get_user_last_set(self, userid):
+        logging.debug('Called')
         return ChatIDs.select(ChatIDs.last_set).where(ChatIDs.chat_id == userid).execute()[0].last_set
 
     def add_chatid(self, id, username):
@@ -34,11 +39,11 @@ class Handler(Model):
         :param username: string (T_User_Name first+last)
         :return: Code 0 - id exist, Code 1 - OK, Code 3 - wrapped exception
         """
+        logging.debug('Called')
         try:
             return ChatIDs.insert({ChatIDs.chat_id: id}).execute()
-        except Exception:
-            # :TODO добавить запись ошибки в лог и уточнение ошибок по PEP8.
-            raise
+        except Exception as e:
+            logging.error(e)
 
     def _is_exist_chat_id(self, chat_id):
         """
@@ -46,12 +51,12 @@ class Handler(Model):
         :param chat_id: int (T_Chat_ID)
         :return: bool type
         """
+        logging.debug('Called')
         try:
             with self.db.atomic():
                 return ChatIDs.select().where(ChatIDs.chat_id == chat_id).exists()
-        except Exception:
-            # :TODO добавить запись ошибки в лог и уточнение ошибок по PEP8.
-            raise
+        except Exception as e:
+            logging.error(e)
 
     def upd_chat_lastset(self, chat_id, setid):
         """
@@ -60,12 +65,12 @@ class Handler(Model):
         :param setid: id of last set
         :return:
         """
+        logging.debug('Called')
         try:
             with self.db.atomic():
                 ChatIDs.update({ChatIDs.last_set: setid}).where(ChatIDs.chat_id == chat_id).execute()
-        except Exception:
-            # :TODO добавить запись ошибки в лог и уточнение ошибок по PEP8.
-            raise
+        except Exception as e:
+            logging.error(e)
 
     def get_chatid_name_by_id(self, chat_id):
         """
@@ -73,12 +78,26 @@ class Handler(Model):
         :param chat_id:
         :return: number of affected rows
         """
+        logging.debug('Called')
         with self.db.atomic():
             try:
                 return ChatIDs.select(ChatIDs.user_name).where(ChatIDs.chat_id == chat_id).execute()
-            except OperationalError:
-                raise
+            except OperationalError as e:
+                logging.error(e)
 
+    def make_user_admin(self, chat_id):
+        logging.debug('Called')
+        try:
+            return ChatIDs.update({ChatIDs.is_admin: True}).where(ChatIDs.chat_id == chat_id).execute()
+        except Exception as e:
+            logging.error(e)
+
+    def user_is_admin(self, chat_id):
+        logging.debug('Called')
+        try:
+            return ChatIDs.select(ChatIDs.is_admin).where(ChatIDs.chat_id == chat_id).execute()[0].is_admin
+        except Exception as e:
+            logging.error(e)
 
     """
     ACTION UNDER THE ChosenGroups

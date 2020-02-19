@@ -1,12 +1,7 @@
-from Core.Self_Check import *
-from Core.Configuration_Singleton import Configuration
-from Core import Self_Check
-from Core.Controller import Sets_Handler, DB_Handle
-from pathlib import Path
+from Core.Controller import DB_Handle
 
-
-
-
-
-print("Some text after warning")
+var = DB_Handle.Handler()
+var.make_user_admin(108)
+if(var.user_is_admin(108)):
+    print("Some text after warning")
 

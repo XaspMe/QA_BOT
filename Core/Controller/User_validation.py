@@ -1,4 +1,5 @@
 from Core.Controller import DB_Handle
+import logging
 
 class UserValidation:
     """
@@ -8,6 +9,8 @@ class UserValidation:
         """
         :param id:
         """
+        logging.getLogger(__name__)
+        logging.info('Ctor initiated')
         self.id = id
         self.user_name = name
         self.handler = DB_Handle.Handler()
@@ -25,6 +28,14 @@ class UserValidation:
                 self.handler.add_chatid(self.id, self.user_name)
                 return True
         except Exception as e:
+            logging.error(e)
             raise e
+
+    # def is_user_admin(self):
+    #     try:
+    #         if self.handler.
+
+
+
 
 

@@ -1,31 +1,40 @@
-from telebot.apihelper import _convert_markup
-from Core import Self_Check
-import Core.Controller.DB_Handle as db_handler
-import Core.Controller.Command_Handler_Strategy as ch
-from Core.Configuration_Singleton import *
 from Core.Self_Check import Diagnostics
+import Maintenance.Logger_Configuration
+from Core.Controller.Command_Handler_Strategy import Messages_hanlder
+from Maintenance.Configuration_Singleton import Configuration
 from telebot import *
-from Core.Controller.Comands import Command_Factory as hm
-
-
-try:
-    Self_Check.Diagnostics().Run()
-except Exception as e:
-    print(e)
+import logging
+import requests
 
 
 
+if __name__ == '__main__':
 
-bot = TeleBot(Configuration().token)
+    logging.getLogger(__name__)
+    logging.info(('-' * 20) + 'Start app' + ('-' * 20))
 
-@bot.message_handler(func=lambda message: True, content_types=['text'])
-def handle_messages(message):
-    handler = ch.Handler().Operate(message)
-    handler.template_handler_method()
-    bot.send_message(message.chat.id, handler.text_response, reply_markup=handler.markup)
+    try:
+        Diagnostics().Run()
+    except Exception as e:
+        print(e)
 
+    util.logger.setLevel(
+        logging.CRITICAL)  # Mute all logs from util because it can spam with more less level than basic.
 
-bot.polling()
+    bot = TeleBot(Configuration().token)
+
+    @bot.message_handler(func=lambda message: True, content_types=['text'])
+    def handle_messages(message):
+        handler = Messages_hanlder().Operate(message)
+        handler.template_handler_method()
+        bot.send_message(message.chat.id, handler.text_response, reply_markup=handler.markup)
+
+    try:
+        bot.polling()
+    except requests.exceptions.SSLError as e:
+        logging.error('No connection with telegram')
+
+    logging.info(('-' * 20) + 'App work done' + ('-' * 20))
 
 """
 Все запросы адресовать в Command handler, 
@@ -33,7 +42,5 @@ bot.polling()
 Возможно требуется создать класс хранящий данные ответа.
 """
 
-"""
-Реализовать логгирование всех действий этого файла с ротацией логов, путь к логу хранится в файле конфига
-"""
+
 

@@ -10,8 +10,9 @@ from telebot import *
 """
 
 
-class Handler:
+class Messages_hanlder:
     def Operate(self, message: str) -> Command_Factory.AbstractHandler:
+
         if message.text == 'Следующий вопрос':
             if len(db.Handler().get_chosenGroups_by_chatids_id(message.chat.id)) > 0:
                 return Command_Factory.NextQuestion(message)
@@ -42,6 +43,9 @@ class Handler:
                 '👍' in message.text or \
                 '👎' in message.text:
             return Command_Factory.Themes(message)
+
+        elif message.text == '/adm':
+            return
 
         else:
             return Command_Factory.Nothing(message)

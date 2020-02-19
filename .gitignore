@@ -8,3 +8,5 @@ Core/Controller/__pycache__/
 venv3/
 *.db
 *.pyc
+
+qa_bot.log

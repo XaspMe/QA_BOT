@@ -1,5 +1,5 @@
 from peewee import *
-from Core import Configuration_Singleton as cf
+from Maintenance import Configuration_Singleton as cf
 
 
 class BaseModel(Model):

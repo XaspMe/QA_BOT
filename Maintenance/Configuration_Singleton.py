@@ -4,7 +4,7 @@ from typing import Optional
 from pathlib import Path
 
 import os.path
-import configparser
+from configparser import ConfigParser
 
 class SingletonMeta(type):
 
@@ -18,34 +18,34 @@ class SingletonMeta(type):
 
 class Configuration(metaclass=SingletonMeta):
     def __init__(self):
-        self.path_to_core = self.get_core_path()
-        self.path_to_app_root = Path(self.path_to_core).parent
+        self.path_to_app_root = self.get_root_path()
         self.read_config()
 
     def read_config(self):
         self.config_ini_path = self.path_to_app_root / 'config.ini'
-        self.config = configparser.ConfigParser()
+        print(self.config_ini_path)
+        self.config = ConfigParser()
         self.config.read(self.config_ini_path)
+        self.token = self.config.get('Telegram', 'Token')
         self.log_name = self.path_to_app_root / self.config.get('application', 'Log_name')
         self.db_name = self.path_to_app_root / self.config.get('DB', 'DB_name')
-        self.token = self.config.get('Telegram', 'Token')
         self.wan_check_adress = self.config.get('application', 'WAN_check_addresses').split(';')
         self.xml_source = self.path_to_app_root / self.config.get('application', 'XML_QA_source_name')
 
-    def get_core_path(file_name: str = __file__) -> str:
+    def get_root_path(self) -> Path:
         """
 
         :return: string: path representation
         """
 
-        path = str(Path.cwd())
+        path = os.path.dirname(__file__)
         while True:
-            if 'Core' in path:
+            if 'QA_BOT' in path:
                 temp_path = os.path.dirname(path)
-                if 'Core' in temp_path:
+                if 'QA_BOT' in temp_path:
                     path = temp_path
                 else:
                     break
             else:
-                raise ValueError(f'There is no "{file_name}" file in current path {path}')
-        return path
+                raise ValueError(f'There is no QA_BOT folder in current path {path}')
+        return Path(path)

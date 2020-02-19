@@ -37,6 +37,6 @@ DB_Handle.Handler().upd_chat_lastset(107, 11)
 
 
 
-#var = db_handler.Handler()
+#var = db_handler.Messages_hanlder()
 #var.create_db_and_tables() # path = 1создание бд
 
