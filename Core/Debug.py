@@ -1,3 +1,3 @@
-from Core.Controller import DB_Handle
+from Core.Controller import DB_handler
 
 

@@ -1,14 +1,14 @@
 from abc import ABC, abstractmethod
-from Core.Controller import DB_Handle, User_validation
-from Core.View import Telegram_Markups as tm
-import emoji
-from Core.Controller import DB_Handle as db
-from telebot import *
+from Core.Controller import DB_handler, UserValidation
+from Core.View import Telegram_Markups as ViewMarkups
+from Core.Exceptions import *
 import logging
 
-class UserAccessError(Exception): pass
 
 class AbstractHandler(ABC):
+    """
+    Abstract handler for all message handlers.
+    """
 
     def __init__(self, message) -> None:
         logging.getLogger(__name__)
@@ -17,18 +17,25 @@ class AbstractHandler(ABC):
         self.prepared = False
 
     def template_handler_method(self) -> None:
+        """
+        Template for processing all messages
+        """
         self.check_user()
-        self.print_question()
+        self.log_question()
         self.prepare_text()
-        self.print_answer()
+        self.log_answer()
         self.prepare_markup()
         self.write_communictaion_record()
 
     def check_user(self) -> None:
-        validate = User_validation.UserValidation(self.message.chat.id, self.message.from_user.username)
+        """
+        Determine account state in database, create new account if not exists in DB.
+        """
+        validate = UserValidation.UserValidation(self.message.chat.id,
+                                                 self.message.from_user)
         validate.check_or_create()
 
-    def print_question(self):
+    def log_question(self):
         print(f'Вопрос пользователя: {self.message.text}')
         # TODO: Организовать логгирование
 
@@ -39,7 +46,7 @@ class AbstractHandler(ABC):
     def prepare_text(self) -> None:
         pass
 
-    def print_answer(self):
+    def log_answer(self):
         print(f'Ответ бота: {self.text_response}')
         # TODO: Организовать логгирование
 
@@ -49,18 +56,18 @@ class AbstractHandler(ABC):
 
     def write_communictaion_record(self):
         try:
-            DB_Handle.Handler().add_communications_record(user_message=self.message.text,
-                                                          bot_response=self.text_response,
-                                                          chat_id=self.message.chat.id)
+            DB_handler.Handler().add_communications_record(user_message=self.message.text,
+                                                           bot_response=self.text_response,
+                                                           chat_id=self.message.chat.id)
         except Exception as e:
             logging.error(e)
 
 class AdminComandsHandler(AbstractHandler, ABC):
 
     def check_user(self) -> None:
-        validate = User_validation.UserValidation(self.message.chat.id, self.message.from_user.username)
+        validate = UserValidation.UserValidation(self.message.chat.id, self.message.from_user.username)
         validate.check_or_create()
-        set_handler = DB_Handle.Handler()
+        set_handler = DB_handler.Handler()
         if not set_handler.user_is_admin(self.message.chat.id):
             raise UserAccessError('User is not admin')
     pass
@@ -73,13 +80,13 @@ class AdminPanel(AdminComandsHandler):
         self.text_response = 'Панель администраттора'
 
     def prepare_markup(self):
-        self.markup = tm.AdminMenu().markup
+        self.markup = ViewMarkups.AdminMenu().markup
 
 
 class NotChosenGroups(AbstractHandler):
     def __init__(self, message):
         super().__init__(message)
-        self.set_handler = DB_Handle.Handler()
+        self.set_handler = DB_handler.Handler()
 
     def prepare_text(self) -> None:
         self.text_response = 'Для перехода к вопросам нужно выбрать хотябы одну группу из тем.'
@@ -91,7 +98,7 @@ class NotChosenGroups(AbstractHandler):
                 self.groups_list.append('👍 ' + theme.name)
             else:
                 self.groups_list.append('👎 ' + theme.name)
-        self.markup = tm.GroupList(self.groups_list).markup
+        self.markup = ViewMarkups.GroupList(self.groups_list).markup
 
 
 class NextQuestion(AbstractHandler):
@@ -104,7 +111,7 @@ class NextQuestion(AbstractHandler):
         super().init_prepare_result(True)
 
     def prepare_text(self) -> None:
-        self.set_handler = DB_Handle.Handler()
+        self.set_handler = DB_handler.Handler()
         self.selected = []
         for x in self.set_handler.get_chosenGroups_by_chatids_id(self.message.chat.id):
             self.selected.append(x.group_id)
@@ -115,15 +122,15 @@ class NextQuestion(AbstractHandler):
 
     def prepare_markup(self) -> None:
         if self.set_handler.is_set_chosen(self.message.chat.id, self.qa_set):
-            self.markup = tm.QAMarkupSetChosen().markup
+            self.markup = ViewMarkups.QAMarkupSetChosen().markup
         else:
-            self.markup = tm.QAMarkup().markup
+            self.markup = ViewMarkups.QAMarkup().markup
 
 
 class Themes(AbstractHandler):
     def __init__(self, message):
         super().__init__(message)
-        self.set_handler = DB_Handle.Handler()
+        self.set_handler = DB_handler.Handler()
 
         if '👍' in self.message.text or \
                 '👎' in self.message.text:
@@ -140,7 +147,7 @@ class Themes(AbstractHandler):
         self.text_response = 'Выберите группу'
 
     def prepare_markup(self) -> None:
-        self.markup = tm.GroupList(self.groups_list).markup
+        self.markup = ViewMarkups.GroupList(self.groups_list).markup
 
 
 class Menu(AbstractHandler):
@@ -149,7 +156,7 @@ class Menu(AbstractHandler):
         super().init_prepare_result(True)
 
     def prepare_markup(self) -> None:
-        self.markup = tm.Menu().markup
+        self.markup = ViewMarkups.Menu().markup
 
     def prepare_text(self) -> None:
         self.text_response = 'Основное меню.'
@@ -159,24 +166,24 @@ class Answer(AbstractHandler):
     def __init__(self, message):
         super().__init__(message)
         super().init_prepare_result(True)
-        self.set_handler = DB_Handle.Handler()
+        self.set_handler = DB_handler.Handler()
 
     def prepare_text(self) -> None:
-        self.last_set = self.set_handler.get_user_last_set(self.message.chat.id)
+        self.last_set = self.set_handler.get_user_last_qa_set(self.message.chat.id)
         self.text_response = self.set_handler.get_answer_by_set_id(self.last_set)
 
     def prepare_markup(self) -> None:
         if self.set_handler.is_set_chosen(self.message.chat.id, self.last_set):
-            self.markup = tm.QAMarkupSetChosen().markup
+            self.markup = ViewMarkups.QAMarkupSetChosen().markup
         else:
-            self.markup = tm.QAMarkup().markup
+            self.markup = ViewMarkups.QAMarkup().markup
 
 
 class InvertChosen(AbstractHandler):
     def __init__(self, message):
         super().__init__(message)
-        self.set_handler = DB_Handle.Handler()
-        last_user_set = self.set_handler.get_user_last_set(self.message.chat.id)
+        self.set_handler = DB_handler.Handler()
+        last_user_set = self.set_handler.get_user_last_qa_set(self.message.chat.id)
         self.set_chosen = None
         if self.set_handler.is_set_chosen(self.message.chat.id, last_user_set):
             self.set_handler.del_ChatidSetIntermediate_by_setId(self.message.chat.id, last_user_set)
@@ -194,9 +201,9 @@ class InvertChosen(AbstractHandler):
 
     def prepare_markup(self) -> None:
         if self.set_chosen:
-            self.markup = tm.QAMarkupSetChosen().markup
+            self.markup = ViewMarkups.QAMarkupSetChosen().markup
         else:
-            self.markup = tm.QAMarkup().markup
+            self.markup = ViewMarkups.QAMarkup().markup
 
 
 class Nothing(AbstractHandler):
@@ -207,4 +214,4 @@ class Nothing(AbstractHandler):
         self.text_response = 'Я еще пока не знаю такой команды, но вот меню.'
 
     def prepare_markup(self) -> None:
-        self.markup = tm.Menu().markup
+        self.markup = ViewMarkups.Menu().markup

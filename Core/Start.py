@@ -1,30 +1,23 @@
-from Core.Self_Check import Diagnostics
-import Maintenance.Logger_Configuration
+from Core.Self_check import Diagnostics
+import Maintenance.Logger_configuration
 from Core.Controller.Command_Handler_Strategy import Messages_hanlder
-from Maintenance.Configuration_Singleton import Configuration
+from Maintenance.App_configuration_singleton import Configuration
 from telebot import *
 import logging
 import requests
 
 
-
 if __name__ == '__main__':
-
-    logging.getLogger(__name__)
-    logging.info(('-' * 20) + 'Start app' + ('-' * 20))
-
     try:
-        Diagnostics().Run()
+        Diagnostics().run()
     except Exception as e:
         print(e)
-
-    util.logger.setLevel(
-        logging.CRITICAL)  # Mute all logs from util because it can spam with more less level than basic.
 
     bot = TeleBot(Configuration().token)
 
     @bot.message_handler(func=lambda message: True, content_types=['text'])
     def handle_messages(message):
+        print(message.text)
         handler = Messages_hanlder().Operate(message)
         handler.template_handler_method()
         bot.send_message(message.chat.id, handler.text_response, reply_markup=handler.markup)

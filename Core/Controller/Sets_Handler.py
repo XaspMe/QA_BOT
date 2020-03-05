@@ -1,4 +1,4 @@
-from Core.Controller import DB_Handle as dh
+from Core.Controller import DB_handler as dh
 import logging
 
 var = dh.Handler()

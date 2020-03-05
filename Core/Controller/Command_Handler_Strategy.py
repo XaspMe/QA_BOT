@@ -1,8 +1,7 @@
-from Core.Controller import DB_Handle, User_validation
+from Core.Controller import DB_handler, UserValidation
 from Core.View import Telegram_Markups as tm
-import emoji
 from Core.Controller.Comands import Command_Factory
-from Core.Controller import DB_Handle as db
+from Core.Controller import DB_handler as db
 from telebot import *
 
 """

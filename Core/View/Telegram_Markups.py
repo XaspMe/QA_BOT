@@ -1,5 +1,4 @@
 from telebot import types
-import emoji
 
 
 class QAMarkup:

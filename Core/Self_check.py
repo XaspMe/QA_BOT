@@ -1,14 +1,12 @@
-from Maintenance.Configuration_Singleton import Configuration
-from Core.Controller.DB_Handle import Handler
+from Maintenance.App_configuration_singleton import Configuration
+from Core.Controller.DB_handler import Handler
+from Core.Exceptions import *
 
 import os
 import platform
 import subprocess
 import warnings
 import logging
-
-class DbFileNotFound(Exception): pass # Исключение не найден файл базы данных.
-class WanCheckError(Exception): pass # Исключение нет связи с WAN
 
 
 class Diagnostics:
@@ -20,14 +18,14 @@ class Diagnostics:
         logging.getLogger(__name__)
         pass
 
-    def Run(self):
+    def run(self):
         """
         :return: True or raise exception
         """
         logging.info('Run self diagnostic')
         self._check_configuration()
         self._check_main_files()
-        self._ping_addresess()
+        self._ping_addresses()
 
     def _check_configuration(self):
         logging.info('Check configuration')
@@ -54,7 +52,7 @@ class Diagnostics:
 
         logging.info('Verification of main files completed')
 
-    def _ping_addresess(self):
+    def _ping_addresses(self):
         """
         Check wan accessibility
         :return:

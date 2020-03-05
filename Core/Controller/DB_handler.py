@@ -1,24 +1,23 @@
-from Core.Model.DB.DB_Model import Groups, Sets, ChatIDs, ChosenGroups, ChatidSetIntermediate, CommunicationsRecords
-from Maintenance import Configuration_Singleton as cf
+from Core.Model.DB.DB_model import Groups, Sets, ChatIDs, ChosenGroups, ChatidSetIntermediate, CommunicationsRecords
+from Maintenance import App_configuration_singleton as Config
 from peewee import *
 
 import random
 import logging
 
-class ChatidSetIntermediateException(Exception): pass
-
 
 class Handler(Model):
     """
-    Класс контекста базы данных (ORM)
+    Handler of all actions under the DB.
     """
-    logging.getLogger(__name__)
 
-    db = SqliteDatabase(cf.Configuration().db_name)
+    def __init__(self):
+        logging.getLogger(__name__)
+        self.db = SqliteDatabase(Config.Configuration().db_name)
 
-    def create_db_and_tables(self) -> int:
+    def create_db_and_tables(self) -> None:
         """
-        Создание базы данных и необходимых таблиц из DB_MODEL.
+        Creating database with all tables and constraints. File will be created in app root folder.
         """
         logging.debug('Called')
         with self.db:
@@ -29,28 +28,35 @@ class Handler(Model):
                                           ChatidSetIntermediate,
                                           CommunicationsRecords])  # Create the tables.
 
-
     """
-    ACTION UNDER THE ChatIDS
+    Action under the user accounts below
     """
-    def get_user_last_set(self, userid):
-        logging.debug('Called')
-        return ChatIDs.select(ChatIDs.last_set).where(ChatIDs.chat_id == userid).execute()[0].last_set
+    def get_user_last_qa_set(self, user_id: int) -> ChatIDs.last_set:
+        """
+        Get user last question and answer set.
+        """
+        logging.debug('Entry')
+        result = ChatIDs.select(ChatIDs.last_set).where(ChatIDs.chat_id == user_id).execute()[0].last_set
+        logging.debug('Возвращаемый результат ' + result)
+        return result
 
-    def add_chatid(self, id, username):
+    def add_user_acc(self, user_id : int, username: str, first_name: str, last_name: str):
         """
         Add new user to table
-        :param id: int (T_Chat_ID)
-        :param username: string (T_User_Name first+last)
-        :return: Code 0 - id exist, Code 1 - OK, Code 3 - wrapped exception
         """
         logging.debug('Called')
         try:
-            return ChatIDs.insert({ChatIDs.chat_id: id}).execute()
+            return ChatIDs.insert({
+                                   ChatIDs.chat_id: user_id,
+                                   ChatIDs.user_name: username,
+                                   ChatIDs.first_name: first_name,
+                                   ChatIDs.last_name: last_name
+                                   }
+                                  ).execute()
         except Exception as e:
             logging.error(e)
 
-    def _is_exist_chat_id(self, chat_id):
+    def is_exists_user_acc(self, chat_id):
         """
         Check what the user is exist in DB
         :param chat_id: int (T_Chat_ID)
