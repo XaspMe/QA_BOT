@@ -10,3 +10,5 @@ venv3/
 *.pyc
 
 qa_bot.log
+
+Logs/talk.log
