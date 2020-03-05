@@ -1,31 +1,33 @@
-from telebot.apihelper import _convert_markup
-
-import Core.Controller.DB_Handle as db_handler
-import Core.Controller.Command_Handler_Strategy as ch
-from Core.Configuration import *
-from Core.Self_Check import Diagnostics
+from Core.Self_check import Diagnostics
+import Maintenance.Logger_configuration
+from Core.Controller.Command_Handler_Strategy import Messages_hanlder
+from Maintenance.App_configuration_singleton import Configuration
 from telebot import *
-from Core.Controller.Comands import Command_Factory as hm
+import logging
+import requests
 
 
-try:
-    diagnostic = Diagnostics(Configuration()).start()
-except Exception as e:
-    print(e)
+if __name__ == '__main__':
+    try:
+        Diagnostics().run()
+    except Exception as e:
+        print(e)
 
+    bot = TeleBot(Configuration().token)
 
+    @bot.message_handler(func=lambda message: True, content_types=['text'])
+    def handle_messages(message):
+        print(message.text)
+        handler = Messages_hanlder().Operate(message)
+        handler.template_handler_method()
+        bot.send_message(message.chat.id, handler.text_response, reply_markup=handler.markup)
 
+    try:
+        bot.polling()
+    except requests.exceptions.SSLError as e:
+        logging.error('No connection with telegram')
 
-bot = TeleBot(Configuration().token)
-
-@bot.message_handler(func=lambda message: True, content_types=['text'])
-def handle_messages(message):
-    handler = ch.Handler().Operate(message)
-    handler.template_handler_method()
-    bot.send_message(message.chat.id, handler.text_response, reply_markup=handler.markup)
-
-
-bot.polling()
+    logging.info(('-' * 20) + 'App work done' + ('-' * 20))
 
 """
 Все запросы адресовать в Command handler, 
@@ -33,7 +35,5 @@ bot.polling()
 Возможно требуется создать класс хранящий данные ответа.
 """
 
-"""
-Реализовать логгирование всех действий этого файла с ротацией логов, путь к логу хранится в файле конфига
-"""
+
 

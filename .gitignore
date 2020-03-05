@@ -1,6 +1,5 @@
 
 .idea/
-Configuration.py
 Core/__pycache__/
 venv/Scripts/
 venv/
@@ -9,3 +8,5 @@ Core/Controller/__pycache__/
 venv3/
 *.db
 *.pyc
+
+qa_bot.log

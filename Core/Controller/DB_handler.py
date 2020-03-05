@@ -1,57 +1,73 @@
-from Core.Model.DB.DB_Model import Groups, Sets, ChatIDs, ChosenGroups, ChatidSetIntermediate
-from Core import Configuration as cf
+from Core.Model.DB.DB_model import Groups, Sets, ChatIDs, ChosenGroups, ChatidSetIntermediate, CommunicationsRecords
+from Maintenance import App_configuration_singleton as Config
 from peewee import *
 
 import random
-
-class ChatidSetIntermediateException(Exception): pass
+import logging
 
 
 class Handler(Model):
     """
-    Класс контекста базы данных (ORM)
+    Handler of all actions under the DB.
     """
-    db = SqliteDatabase(cf.Configuration().db_name)
 
-    def create_db_and_tables(self) -> int:
+    def __init__(self):
+        logging.getLogger(__name__)
+        self.db = SqliteDatabase(Config.Configuration().db_name)
+
+    def create_db_and_tables(self) -> None:
         """
-        Создание базы данных и необходимых таблиц из DB_MODEL.
+        Creating database with all tables and constraints. File will be created in app root folder.
         """
+        logging.debug('Called')
         with self.db:
-            return self.db.create_tables([Groups, Sets, ChatIDs, ChosenGroups, ChatidSetIntermediate])  # Create the tables.
-
+            return self.db.create_tables([Groups,
+                                          Sets,
+                                          ChatIDs,
+                                          ChosenGroups,
+                                          ChatidSetIntermediate,
+                                          CommunicationsRecords])  # Create the tables.
 
     """
-    ACTION UNDER THE ChatIDS
+    Action under the user accounts below
     """
-    def get_user_last_set(self, userid):
-        return ChatIDs.select(ChatIDs.last_set).where(ChatIDs.chat_id == userid).execute()[0].last_set
+    def get_user_last_qa_set(self, user_id: int) -> ChatIDs.last_set:
+        """
+        Get user last question and answer set.
+        """
+        logging.debug('Entry')
+        result = ChatIDs.select(ChatIDs.last_set).where(ChatIDs.chat_id == user_id).execute()[0].last_set
+        logging.debug('Возвращаемый результат ' + result)
+        return result
 
-    def add_chatid(self, id, username):
+    def add_user_acc(self, user_id : int, username: str, first_name: str, last_name: str):
         """
         Add new user to table
-        :param id: int (T_Chat_ID)
-        :param username: string (T_User_Name first+last)
-        :return: Code 0 - id exist, Code 1 - OK, Code 3 - wrapped exception
         """
+        logging.debug('Called')
         try:
-            return ChatIDs.insert({ChatIDs.chat_id: id}).execute()
-        except Exception:
-            # :TODO добавить запись ошибки в лог и уточнение ошибок по PEP8.
-            raise
+            return ChatIDs.insert({
+                                   ChatIDs.chat_id: user_id,
+                                   ChatIDs.user_name: username,
+                                   ChatIDs.first_name: first_name,
+                                   ChatIDs.last_name: last_name
+                                   }
+                                  ).execute()
+        except Exception as e:
+            logging.error(e)
 
-    def _is_exist_chat_id(self, chat_id):
+    def is_exists_user_acc(self, chat_id):
         """
         Check what the user is exist in DB
         :param chat_id: int (T_Chat_ID)
         :return: bool type
         """
+        logging.debug('Called')
         try:
             with self.db.atomic():
                 return ChatIDs.select().where(ChatIDs.chat_id == chat_id).exists()
-        except Exception:
-            # :TODO добавить запись ошибки в лог и уточнение ошибок по PEP8.
-            raise
+        except Exception as e:
+            logging.error(e)
 
     def upd_chat_lastset(self, chat_id, setid):
         """
@@ -60,12 +76,12 @@ class Handler(Model):
         :param setid: id of last set
         :return:
         """
+        logging.debug('Called')
         try:
             with self.db.atomic():
                 ChatIDs.update({ChatIDs.last_set: setid}).where(ChatIDs.chat_id == chat_id).execute()
-        except Exception:
-            # :TODO добавить запись ошибки в лог и уточнение ошибок по PEP8.
-            raise
+        except Exception as e:
+            logging.error(e)
 
     def get_chatid_name_by_id(self, chat_id):
         """
@@ -73,12 +89,26 @@ class Handler(Model):
         :param chat_id:
         :return: number of affected rows
         """
+        logging.debug('Called')
         with self.db.atomic():
             try:
                 return ChatIDs.select(ChatIDs.user_name).where(ChatIDs.chat_id == chat_id).execute()
-            except OperationalError:
-                raise
+            except OperationalError as e:
+                logging.error(e)
 
+    def make_user_admin(self, chat_id):
+        logging.debug('Called')
+        try:
+            return ChatIDs.update({ChatIDs.is_admin: True}).where(ChatIDs.chat_id == chat_id).execute()
+        except Exception as e:
+            logging.error(e)
+
+    def user_is_admin(self, chat_id):
+        logging.debug('Called')
+        try:
+            return ChatIDs.select(ChatIDs.is_admin).where(ChatIDs.chat_id == chat_id).execute()[0].is_admin
+        except Exception as e:
+            logging.error(e)
 
     """
     ACTION UNDER THE ChosenGroups
@@ -175,6 +205,10 @@ class Handler(Model):
     """
     ACTION UNDER THE Sets
     """
+    def get_sets_count(self):
+        cnt = Sets.select().execute()
+        return cnt
+
     def add_set(self, group, question, answer):
         return Sets.insert({Sets.qa_group: group, Sets.question: question, Sets.answer: answer}).execute()
 
@@ -219,6 +253,16 @@ class Handler(Model):
         return ChatidSetIntermediate.delete().where((ChatidSetIntermediate.chat == chat_id) \
                                                 & (ChatidSetIntermediate.set == set_id)).execute()
 
+    """
+    Actions under the CommunicationsRecords table
+    """
+    def add_communications_record(self, chat_id, user_message, bot_response):
+        try:
+            CommunicationsRecords.insert({CommunicationsRecords.user_message: user_message,
+                                          CommunicationsRecords.bot_response: bot_response,
+                                          CommunicationsRecords.chat: chat_id}).execute()
+        except Exception as e:
+            logging.error(e)
 
 
 

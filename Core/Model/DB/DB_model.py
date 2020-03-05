@@ -1,5 +1,6 @@
 from peewee import *
-from Core import Configuration as cf
+from Maintenance import App_configuration_singleton as cf
+import datetime
 
 
 class BaseModel(Model):
@@ -32,7 +33,9 @@ class ChatIDs(BaseModel):
     """
     id = AutoField()  # PK
     chat_id = TextField(null=False)  # Telegram chat ID
-    user_name = TextField(null=True)  # Telegram user name of user
+    user_name = TextField(null=True)  # NickName
+    first_name = TextField(null=True)
+    last_name = TextField(null=True)
     is_admin = BooleanField(null=False, default=False)
     last_set = ForeignKeyField(Sets, null=True)  # Last set of conversation.
 
@@ -53,3 +56,14 @@ class ChatidSetIntermediate(BaseModel):
     id = AutoField()
     chat = ForeignKeyField(ChatIDs, null=False)  # chat FK
     set = ForeignKeyField(Sets, null=False)  # set FK
+
+
+class CommunicationsRecords(BaseModel):
+    """
+    All conversation record
+    """
+    id = AutoField()
+    chat = ForeignKeyField(ChatIDs, null=False)  # chat FK
+    user_message = TextField(null=True, default='_')
+    bot_response = TextField(null=True, default='_')
+    time_stamp = DateTimeField(null=False, default = datetime.datetime.now) #
