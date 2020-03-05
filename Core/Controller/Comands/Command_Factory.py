@@ -3,6 +3,8 @@ from Core.Controller import DB_handler, UserValidation
 from Core.View import Telegram_Markups as ViewMarkups
 from Core.Exceptions import *
 import logging
+from Maintenance import Logger_configuration
+from logging import handlers
 
 
 class AbstractHandler(ABC):
@@ -12,6 +14,7 @@ class AbstractHandler(ABC):
 
     def __init__(self, message) -> None:
         logging.getLogger(__name__)
+        self.communication_log = Logger_configuration.communication_logger
         self.message = message
         self.text_response = ''
         self.prepared = False
@@ -36,8 +39,7 @@ class AbstractHandler(ABC):
         validate.check_or_create()
 
     def log_question(self):
-        print(f'Вопрос пользователя: {self.message.text}')
-        # TODO: Организовать логгирование
+        self.communication_log.info(f'Вопрос от {self.message.from_user.username}: {self.message.text}')
 
     def init_prepare_result(self, prepared: bool) -> None:
         self.is_prepared = prepared
@@ -47,8 +49,7 @@ class AbstractHandler(ABC):
         pass
 
     def log_answer(self):
-        print(f'Ответ бота: {self.text_response}')
-        # TODO: Организовать логгирование
+        self.communication_log.info(f'Ответ бота для {self.message.from_user.username}: {self.text_response}')
 
     @abstractmethod
     def prepare_markup(self) -> None:

@@ -23,11 +23,11 @@ class Configuration(metaclass=SingletonMeta):
 
     def read_config(self):
         self.config_ini_path = self.path_to_app_root / 'config.ini'
-        print(self.config_ini_path)
         self.config = ConfigParser()
         self.config.read(self.config_ini_path)
         self.token = self.config.get('Telegram', 'Token')
-        self.log_name = self.path_to_app_root / self.config.get('application', 'Log_name')
+        self.log_name = self.path_to_app_root / 'Logs' / self.config.get('application', 'Log_name')
+        self.communication_log_name = self.path_to_app_root / 'Logs' / self.config.get('application', 'Communication_log_name')
         self.db_name = self.path_to_app_root / self.config.get('DB', 'DB_name')
         self.wan_check_adress = self.config.get('application', 'WAN_check_addresses').split(';')
         self.xml_source = self.path_to_app_root / 'Maintenance' / self.config.get('application', 'XML_QA_source_name')

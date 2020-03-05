@@ -17,7 +17,6 @@ if __name__ == '__main__':
 
     @bot.message_handler(func=lambda message: True, content_types=['text'])
     def handle_messages(message):
-        print(message.text)
         handler = Messages_hanlder().Operate(message)
         handler.template_handler_method()
         bot.send_message(message.chat.id, handler.text_response, reply_markup=handler.markup)

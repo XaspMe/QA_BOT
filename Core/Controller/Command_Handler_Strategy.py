@@ -34,20 +34,20 @@ class Messages_hanlder:
             else:
                 return Command_Factory.NotChosenGroups(message)
 
-        elif message.text == 'Добавить в избранное' or \
-                message.text == 'Удалить из избранного':
-            return Command_Factory.InvertChosen(message)
+        # elif message.text == 'Добавить в избранное' or \
+        #         message.text == 'Удалить из избранного':
+        #     return Command_Factory.InvertChosen(message)
 
         elif message.text == 'Выбрать темы' or \
                 '👍' in message.text or \
                 '👎' in message.text:
             return Command_Factory.Themes(message)
 
-        elif message.text == '/adm':
-            try:
-                return Command_Factory.AdminPanel(message)
-            except Command_Factory.UserAccessError:
-                return Command_Factory.Nothing(message)
+        # elif message.text == '/adm':
+        #     try:
+        #         return Command_Factory.AdminPanel(message)
+        #     except Command_Factory.UserAccessError:
+        #         return Command_Factory.Nothing(message)
 
         else:
             return Command_Factory.Nothing(message)

@@ -37,7 +37,7 @@ class Handler(Model):
         """
         logging.debug('Entry')
         result = ChatIDs.select(ChatIDs.last_set).where(ChatIDs.chat_id == user_id).execute()[0].last_set
-        logging.debug('Возвращаемый результат ' + result)
+        logging.debug('Возвращаемый результат ' + repr(result))
         return result
 
     def add_user_acc(self, user_id : int, username: str, first_name: str, last_name: str):
