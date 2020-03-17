@@ -34,7 +34,6 @@ class Configuration(metaclass=SingletonMeta):
 
     def get_root_path(self) -> Path:
         """
-
         :return: string: path representation
         """
 

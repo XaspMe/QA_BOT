@@ -3,7 +3,24 @@ from Core.Controller import DB_handler
 import os
 from pathlib import Path
 
+
+def dump_qa(qa_list):
+    import json
+
+    data = {
+        'questions': []
+        }
+
+    for x in qa_list:
+        data['questions'].append({'group': x['group'], 'question': x['question'], 'answer': x['answer']})
+
+    print(data)
+
+    with open('QA.json', 'w', encoding='windows-1251') as outfile:
+        json.dump(data, outfile)
+
 var = DB_handler.Handler()
+
 var.create_db_and_tables()
 
 ROOT_DIR = os.path.abspath(os.curdir)
@@ -12,6 +29,7 @@ data = XML_Reader.get(PathToFile / "QASource.xml")
 
 data = sorted(data, key=lambda x: x['group'])
 
+dump_qa(data)
 for i in data:
     DB_handler.Handler().add_set(i['group'], i['question'], i['answer'])
 

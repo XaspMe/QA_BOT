@@ -55,10 +55,6 @@ class Diagnostics:
     def _ping_addresses(self):
         """
         Check wan accessibility
-        :return:
-        """
-        """
-        TODO: Сделать на список устройств.
         """
         logging.info('Check WAN access')
         param = '-n' if platform.system().lower() == 'windows' else '-c'  # different params for win/linux platform

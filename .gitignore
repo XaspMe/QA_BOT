@@ -8,7 +8,11 @@ Core/Controller/__pycache__/
 venv3/
 *.db
 *.pyc
+*.json
 
 qa_bot.log
 
 Logs/talk.log
+/Maintenance/QA.json
+
+Maintenance/QASource.xml

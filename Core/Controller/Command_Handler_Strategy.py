@@ -28,7 +28,7 @@ class Messages_hanlder:
                 message.text == '/help':
             return Command_Factory.Menu(message)
 
-        elif message.text == 'Перейти к вопросам':
+        elif message.text == 'Перейти к вопросам по выбранным группам':
             if len(db.Handler().get_chosenGroups_by_chatids_id(message.chat.id)) > 0:
                 return Command_Factory.NextQuestion(message)
             else:

@@ -11,9 +11,9 @@ class QAMarkup:
         item_next = types.KeyboardButton('Следующий вопрос')
         item_answer = types.KeyboardButton('Показать ответ')
         self.markup.row(item_next, item_answer)
-        item_star = types.KeyboardButton('Добавить в избранное')
+        #item_star = types.KeyboardButton('Добавить в избранное')
         item_menu = types.KeyboardButton('Меню')
-        self.markup.row(item_menu, item_star)
+        self.markup.row(item_menu)
 
 
 class QAMarkupSetChosen:
@@ -26,9 +26,9 @@ class QAMarkupSetChosen:
         item_next = types.KeyboardButton('Следующий вопрос')
         item_answer = types.KeyboardButton('Показать ответ')
         self.markup.row(item_next, item_answer)
-        item_star = types.KeyboardButton('Удалить из избранного')
+        #item_star = types.KeyboardButton('Удалить из избранного')
         item_menu = types.KeyboardButton('Меню')
-        self.markup.row(item_menu, item_star)
+        self.markup.row(item_menu)
 
 
 class Menu:
@@ -40,9 +40,9 @@ class Menu:
         Конструктор
         """
         self.markup = types.ReplyKeyboardMarkup(resize_keyboard=True)  # Добавляем переменную, разрешить резайз (подгон по размеру)
-        item_questions = types.KeyboardButton('Перейти к вопросам')  # Переменная хранит кнопку клавиатуры
-        item_favourites = types.KeyboardButton('Избранные вопросы')  # Переменная хранит кнопку клавиатуры
-        self.markup.row(item_questions, item_favourites)  # Добавляем строку кнопок, передаем в нее две кнопки
+        item_questions = types.KeyboardButton('Перейти к вопросам по выбранным группам')  # Переменная хранит кнопку клавиатуры
+        #item_favourites = types.KeyboardButton('Избранные вопросы')  # Переменная хранит кнопку клавиатуры
+        self.markup.row(item_questions)  # Добавляем строку кнопок, передаем в нее две кнопки
         item_groups = types.KeyboardButton('Выбрать темы')  # Переменная хранит кнопку клавиатуры
         self.markup.row(item_groups)  # Добавляем строку кнопок, передаем в одну кнопку
 

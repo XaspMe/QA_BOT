@@ -212,6 +212,9 @@ class Handler(Model):
     def add_set(self, group, question, answer):
         return Sets.insert({Sets.qa_group: group, Sets.question: question, Sets.answer: answer}).execute()
 
+    def remove_set(self, id):
+        return Sets.delete().where(Sets.id == id).execute()
+
     def get_random_set_by_groups(self, groups):
         random_group = random.choice(groups)
         return Sets.select(Sets.id, Sets.question).where(Sets.qa_group == random_group).order_by(fn.Random()).execute()

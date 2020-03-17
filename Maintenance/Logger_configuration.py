@@ -18,7 +18,7 @@ logging.basicConfig(format='%(asctime)s | %(levelname)s | %(filename)s | %(modul
                               maxBytes=2000000,
                               backupCount=5),
                               logging.StreamHandler(stream=sys.stdout)],
-                    level=logging.WARNING
+                    level=logging.INFO
                     )
 
 
